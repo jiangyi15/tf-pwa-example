@@ -1,0 +1,72 @@
+data:
+    dat_order: [p, K, mup, mum]
+
+decay:
+    Lb: 
+    - [Lst, Jpsi, p_break: True]
+    - [Pc, K, p_break: True]
+    - [JpsiK, p, p_break: True]
+    Lst: [p, K]
+    Pc: [Jpsi, p]
+    JpsiK: [Jpsi, K]
+    Jpsi: [mup, mum]
+
+particle:
+    $top:
+        Lb:
+            J: 1/2
+            P: 1
+            mass: 5.6196
+    $finals:
+        p:
+            J: 1/2
+            P: -1
+            mass: 0.9382720813
+        K: 
+            J: 0
+            P: -1
+            mass: 0.493677 
+        mup:
+            J: 1/2
+            P: -1
+            mass: 0.1056583745
+        mum:
+            J: 1/2
+            P: -1
+            mass: 0.1056583745
+    Jpsi:
+        J: 1
+        P: -1
+        mass: 3.0969
+        model: one
+    $include: Resonances.yml
+    Lst: 
+    - Λ(1405)
+    - Λ(1520)
+    - Λ(1600)
+    - Λ(1670)
+    - Λ(1690)
+    - Λ(1800)
+    - Λ(1810)
+    - Λ(1820)
+    - Λ(1830)
+    - Λ(1890)
+    - Λ(2100)
+    - Λ(2110)
+    # - Λ(2350)
+    # - Λ(2585)
+    Pc: [ Pc(4380), Pc(4450)]
+    JpsiK: []
+
+plot:
+    mass:   
+        Pc:
+            display: "M(Jpsi p)"
+        Lst:
+            display: "M(Kp)"
+        JpsiK:
+            display: "M(Jpsi K)"
+        
+
+
+
