@@ -1,0 +1,93 @@
+data:
+    dat_order: [B, C, D]
+    data: "data.dat"
+    phsp: "phsp.dat"
+    cached_int: True
+
+decay:
+    A: 
+    - [BC, D]
+    - [CD, B]
+    - [BD, C]
+    BC: [B, C]
+    CD: [C, D]
+    BD: [B, D]
+
+particle:
+    $top:
+        A: 
+            J: 0
+            P: -1
+            mass: 4.5
+    $finals:
+        B: 
+            J: 0
+            P: -1
+            mass: 1.0
+        C:
+            J: 0
+            P: -1
+            mass: 1.0
+        D:
+            J: 0
+            P: -1
+            mass: 0.5
+    BC: 
+    - BC1
+    - BC2
+    CD: 
+    - CD1
+    - CD2
+    - CD3
+    BD: []
+    BC1:
+        J: 1
+        P: -1
+        mass: 3.0
+        width: 0.1
+        mass_min: 2.5
+        mass_max: 3.5
+        width_min: 0.01
+        width_max: 0.3
+        # float: mg
+    BC2:
+        J: 0
+        P: +1
+        mass: 3.0
+        width: 0.50
+    CD1:
+        J: 0
+        P: +1
+        mass: 2.0
+        width: 0.1
+    CD2:
+        J: 0
+        P: +1
+        mass: 2.5
+        width: 0.06
+    CD3:
+        J: 0
+        P: +1
+        mass: 3.0
+        width: 0.07
+
+plot:
+    config:
+        bins: 100
+    mass:
+        BC:
+            display: "m(BC)"
+        BD:
+            display: "m(BD)"
+        CD:
+            display: "m(CD)"
+    angle:
+        BC/B:
+            cos(beta):
+                display: "$\\cos\\theta^{BC}_{B}$"
+        BD/B:
+            cos(beta):
+                display: "$\\cos\\theta^{BD}_{B}$"
+        CD/C:
+            cos(beta):
+                display: "$\\cos\\theta^{CD}_{B}$"
