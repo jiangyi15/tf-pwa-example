@@ -1,0 +1,211 @@
+
+data:
+###########    With Lmd -> p pi- information
+    dat_order: [Lambda, pip, piz, p, pim]
+
+    data: [["data/data4600_lmd_pi_pi0.dat","data/data4600_p_pi.dat"],["data/data4612_lmd_pi_pi0.dat","data/data4612_p_pi.dat"],["data/data4626_lmd_pi_pi0.dat","data/data4626_p_pi.dat"],["data/data4640_lmd_pi_pi0.dat","data/data4640_p_pi.dat"],["data/data4660_lmd_pi_pi0.dat","data/data4660_p_pi.dat"],["data/data4680_lmd_pi_pi0.dat","data/data4680_p_pi.dat"],["data/data4700_lmd_pi_pi0.dat","data/data4700_p_pi.dat"]]
+    data_charge: [["data/data4600_charge.dat"], ["data/data4612_charge.dat"], ["data/data4626_charge.dat"], ["data/data4640_charge.dat"], ["data/data4660_charge.dat"], ["data/data4680_charge.dat"], ["data/data4700_charge.dat"]]
+
+    phsp: [["data/phsp4600_lmd_pi_pi0.dat","data/phsp4600_p_pi.dat"],["data/phsp4612_lmd_pi_pi0.dat","data/phsp4612_p_pi.dat"],["data/phsp4626_lmd_pi_pi0.dat","data/phsp4626_p_pi.dat"],["data/phsp4640_lmd_pi_pi0.dat","data/phsp4640_p_pi.dat"],["data/phsp4660_lmd_pi_pi0.dat","data/phsp4660_p_pi.dat"],["data/phsp4680_lmd_pi_pi0.dat","data/phsp4680_p_pi.dat"],["data/phsp4700_lmd_pi_pi0.dat","data/phsp4700_p_pi.dat"]]
+    phsp_charge: [["data/phsp4600_charge.dat"], ["data/phsp4612_charge.dat"], ["data/phsp4626_charge.dat"], ["data/phsp4640_charge.dat"], ["data/phsp4660_charge.dat"], ["data/phsp4680_charge.dat"], ["data/phsp4700_charge.dat"]]
+
+    phsp_noeff: ["data/genmc_noeff_lmd_pi_pi0.dat","data/genmc_noeff_p_pi.dat"]
+
+    bg: [["data/bkg4600_lmd_pi_pi0.dat","data/bkg4600_p_pi.dat"],["data/bkg4612_lmd_pi_pi0.dat","data/bkg4612_p_pi.dat"],["data/bkg4626_lmd_pi_pi0.dat","data/bkg4626_p_pi.dat"],["data/bkg4640_lmd_pi_pi0.dat","data/bkg4640_p_pi.dat"],["data/bkg4660_lmd_pi_pi0.dat","data/bkg4660_p_pi.dat"],["data/bkg4680_lmd_pi_pi0.dat","data/bkg4680_p_pi.dat"],["data/bkg4700_lmd_pi_pi0.dat","data/bkg4700_p_pi.dat"]]
+    bg_charge: [["data/bkg4600_charge.dat"], ["data/bkg4612_charge.dat"], ["data/bkg4626_charge.dat"], ["data/bkg4640_charge.dat"], ["data/bkg4660_charge.dat"], ["data/bkg4680_charge.dat"], ["data/bkg4700_charge.dat"]]
+
+    # bkg fraction
+    bg_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    cp_trans: True
+    r_boost: True
+    center_mass: True
+
+    cached_amp: True
+
+decay:
+    Lmdc:
+    - [Lambda, R_CD, p_break: True, barrier_factor_norm: True]
+#    - [NR(0+), Lambda, p_break: True, barrier_factor_norm: True]
+    - [NR(1-), Lambda, p_break: True, barrier_factor_norm: True]
+#    - [NR(2+), Lambda, p_break: True, barrier_factor_norm: True]
+    - [piz, R_BC, p_break: True, barrier_factor_norm: True]
+    - [pip, R_BD, p_break: True, barrier_factor_norm: True]
+
+    R_CD: [pip, piz, barrier_factor_norm: True]
+#    NR(0+) : [pip, piz, barrier_factor_norm: True]
+    NR(1-) : [pip, piz, barrier_factor_norm: True]
+#    NR(2+) : [pip, piz, barrier_factor_norm: True]
+    R_BC: [Lambda, pip, barrier_factor_norm: True]
+    R_BD: [Lambda, piz, barrier_factor_norm: True]
+
+    Lambda: [pim, p, p_break: True, barrier_factor_norm: True]
+
+
+# `particle` describe the particle included
+# top, finals, include are used as keywords
+particle:
+    # top decay particle
+    $top:
+        Lmdc:
+            J: 1/2
+            P: +1
+            mass: 2.2891
+            spins: [-1/2 , 1/2]
+    $finals:
+#        Lambda:
+#            display: "$\\Lambda$"
+#            J: 1/2
+#            P: +1
+        pip:
+            display: "$\\pi^{+}$"
+            J: 0
+            P: -1
+            mass: 0.1395695
+        piz:
+            display: "$\\pi^{0}$"
+            J: 0
+            P: -1
+            mass: 0.134975
+        p:
+            display: "$p$"
+            J: 1/2
+            P: +1
+            mass: 0.93827655
+        pim:
+            display: "$\\pi^{-}$"
+            J: 0
+            P: -1
+            mass: 0.1395695
+    # map for possible resonances in the same position
+    # each entry is a list of resonances id [option]
+    # include detailed parameters defined in `Resonances.yml`
+    $include: Resonances.yml
+    R_CD:
+      - rho(770)
+
+    Lambda:
+      display: "$\\Lambda$"
+      J: 1/2
+      P: +1
+      mass: 1.115683
+      model: one
+
+    NR(0+):
+      display: "$NR_{0^{+}}(\\pi^{+}\\pi^{0})$"
+      J: 0
+      P: +1
+      mass: 0.725
+      model: one
+
+    NR(1-):
+      display: "$NR_{1^{-}}(\\pi^{+}\\pi^{0})$"
+      J: 1
+      P: -1
+      mass: 0.725
+      model: one
+
+    NR(2+):
+      display: "$NR_{2^{+}}(\\pi^{+}\\pi^{0})$"
+      J: 2
+      P: +1
+      mass: 0.725
+      model: one
+
+    R_BC:
+      - Sigma(1385)p
+#      - Sigma(1660)p
+      - Sigma(1670)p
+      - Sigma(1750)p
+#      - Sigma(1750)p2
+#      - Sigma(1775)p
+#      - Sigma(1910)p
+#      - Sigma(1915)p
+#      - Sigma(2030)p
+#      - Sigma(1380)p
+
+    R_BD:
+      - Sigma(1385)0
+#      - Sigma(1660)0
+      - Sigma(1670)0
+      - Sigma(1750)0
+#      - Sigma(1775)0
+#      - Sigma(1910)0
+#      - Sigma(1915)0
+#      - Sigma(2030)0
+#      - Sigma(1380)0
+
+
+constrains:
+    particle: null
+    decay: {fix_chain_idx: 0, fix_chain_val: 1}
+    fix_var: {"Lambda->pim.p_g_ls_1r": 0.435376, "Lambda->pim.p_g_ls_1i": 0.0}
+
+# plot describe the configuration of plotting 1-d data distribution
+plot:
+    config:
+        bins: 30
+    mass:
+        R_BC:
+            display: "$M_{\\Lambda\\pi^{+}}$"
+            legend: False
+            range: [1.20, 2.20]
+        R_BD:
+            display: "$M_{\\Lambda\\pi^{0}}$"
+            legend: False
+            range: [1.20, 2.20]
+        R_CD:
+            display: "$M_{\\pi^{+}\\pi^{0}}$"
+            range: [0.23, 1.21]
+    # helicity angle
+    angle:
+        #chain Lmdc -> Lmd rho+
+        Lmdc/R_CD:
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{c}^{+}}^{1})$"
+        Lmdc/R_CD/piz:
+            alpha:
+                display: "$\\phi^{\\rho^{+}}_{\\pi^{0}}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\rho^{+}})$"
+        R_CD/Lambda/p:
+            alpha:
+                display: "$\\phi^{\\Lambda_{1}}_{p}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{1}})$"
+
+        #chain Lmdc -> Sigma*+ pi0
+        Lmdc/R_BC:
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{c}^{+}}^{2})$"
+        Lmdc/R_BC/Lambda:
+            alpha:
+                display: "$\\phi^{\\Sigma^{*+}}_{\\Lambda}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Sigma^{*+}})$"
+        R_BC/Lambda/p:
+            alpha:
+                display: "$\\phi^{\\Lambda_{2}}_{p}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{2}})$"
+
+        #chain Lmdc -> Sigma*0 pi+
+        Lmdc/R_BD:
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{c}^{+}}^{3})$"
+        Lmdc/R_BD/Lambda:
+            alpha:
+                display: "$\\phi^{\\Sigma^{*0}}_{\\Lambda}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Sigma^{*0}})$"
+        R_BD/Lambda/p:
+            alpha:
+                display: "$\\phi^{\\Lambda_{3}}_{p}$"
+            cos(beta):
+                display: "$\\cos(\\theta_{\\Lambda_{3}})$"
+    2Dplot:
+        dalitz_Lambdapi:
+            x: m_R_BC**2
+            y: m_R_BD**2
+            xlabel: "$M_{\\Lambda\\pi^{+}}^2$"
+            ylabel: "$M_{\\Lambda\\pi^{0}}^2$"
+            display: "$M_{\\Lambda\\pi^{+}}^2$ vs $M_{\\Lambda\\pi^{0}}^2$"

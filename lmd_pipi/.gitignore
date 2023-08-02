@@ -1,0 +1,5 @@
+data
+figure
+*.csv
+final_params.json
+*.npy

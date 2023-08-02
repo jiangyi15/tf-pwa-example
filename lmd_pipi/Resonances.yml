@@ -1,0 +1,194 @@
+Sigma(1385)p:
+  J : 3/2
+  P: +1
+  mass: 1.38280
+  width: 0.0360
+  display: "$\\Sigma(1385)^{+}$"
+
+Sigma(1385)0:
+  J : 3/2
+  P: +1
+  mass: 1.3837
+  width: 0.036
+  display: "$\\Sigma(1385)^{0}$"
+
+Sigma(1660)p:
+  J : 1/2
+  P: +1
+  mass: 1.665
+  mass_min: 1.645
+  mass_max: 1.685
+  width: 0.3
+  width_min: 0.26
+  width_max: 0.44
+  #  float: mg
+  display: "$\\Sigma(1660)^{+}$"
+
+Sigma(1660)0:
+  J : 1/2
+  P: +1,
+  mass: 1.665
+  mass_min: 1.645
+  mass_max: 1.685
+  width: 0.3
+  width_min: 0.26
+  width_max: 0.44
+  display: "$\\Sigma(1660)^{0}$"
+
+Sigma(1670)p:
+  J : 3/2
+  P: -1
+  mass: 1.665
+  width: 0.054
+  display: "$\\Sigma(1670)^{+}$"
+
+Sigma(1670)0:
+  J : 3/2
+  P: -1
+  mass: 1.665
+  width: 0.054
+  display: "$\\Sigma(1670)^{0}$"
+
+Sigma(1750)p:
+  J : 1/2
+  P: -1
+  mass: 1.692
+  width: 0.208
+  display: "$\\Sigma(1750)^{+}$"
+
+Sigma(1750)p2:
+  J: 1/2
+  P: -1
+  mass: 1.692
+  width: 0.208
+  display: "$\\Sigma(1750)^{+}$"
+
+Sigma(1750)0:
+  J : 1/2
+  P: -1
+  mass: 1.692
+  width: 0.208
+  display: "$\\Sigma(1750)^{0}$"
+
+Sigma(1775)p:
+  J : 5/2
+  P: -1
+  mass: 1.776
+  mass_min: 1.772
+  mass_max: 1.780
+  width: 0.124
+  width_min: 0.116
+  width_max: 0.132
+  #  float: mg
+  display: "$\\Sigma(1775)^{+}$"
+
+Sigma(1775)0:
+  J : 5/2
+  P: -1
+  mass: 1.776
+  mass_min: 1.772
+  mass_max: 1.780
+  width: 0.124
+  width_min: 0.116
+  width_max: 0.132
+  #  float: mg
+  display: "$\\Sigma(1775)^{0}$"
+
+Sigma(1910)p:
+  J : 3/2
+  P: -1
+  mass: 1.878
+  mass_min: 1.866
+  mass_max: 1.890
+  width: 0.224
+  width_min: 0.199
+  width_max: 0.249
+  #  float: mg
+  display: "$\\Sigma(1910)^{+}$"
+
+
+Sigma(1910)0:
+  J : 3/2
+  P: -1
+  mass: 1.878
+  mass_min: 1.866
+  mass_max: 1.890
+  width: 0.224
+  width_min: 0.199
+  width_max: 0.249
+  #  float: mg
+  display: "$\\Sigma(1910)^{0}$"
+
+
+Sigma(1915)p:
+  J : 5/2
+  P: 1
+  mass: 1.918
+  mass_min: 1.912
+  mass_max: 1.924
+  width: 0.102
+  width_min: 0.090
+  width_max: 0.114
+  #  float: mg
+  display: "$\\Sigma(1915)^{+}$"
+
+Sigma(1915)0:
+  J : 5/2
+  P: 1
+  mass: 1.918
+  mass_min: 1.912
+  mass_max: 1.924
+  width: 0.102
+  width_min: 0.090
+  width_max: 0.114
+  #  float: mg
+  display: "$\\Sigma(1915)^{0}$"
+
+Sigma(2030)p:
+  J : 7/2
+  P: 1
+  mass: 2.032
+  mass_min: 2.026
+  mass_max: 2.038
+  width: 0.177
+  width_min: 0.165
+  width_max: 0.189
+  #  float: mg
+  display: "$\\Sigma(2030)^{+}$"
+
+Sigma(2030)0:
+  J : 7/2
+  P: 1
+  mass: 2.032
+  mass_min: 2.026
+  mass_max: 2.038
+  width: 0.177
+  width_min: 0.165
+  width_max: 0.189
+  #  float: mg
+  display: "$\\Sigma(2030)^{0}$"
+
+rho(770):
+  J : 1
+  P: -1
+  mass: 0.77511
+  width: 0.1491
+  model: GS_rho
+  display: "$\\rho(770)^{+}$"
+
+# check with Sigma1380
+Sigma(1380)p:
+  J : 1/2
+  P: -1
+  mass: 1.380
+  width: 0.120
+  display: "$\\Sigma(1380)^{+}$"
+
+Sigma(1380)0:
+  J : 1/2
+  P: -1
+  mass: 1.380
+  g0: 0.120
+  display: "$\\Sigma(1380)^{0}$"
+
+
