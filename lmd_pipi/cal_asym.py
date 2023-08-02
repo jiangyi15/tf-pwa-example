@@ -8,12 +8,13 @@ config = ConfigLoader("config.yml")
 config.set_params("gen_params.json")
 config.inv_he = np.load("error_matrix.npy")
 
+
 def read_complex(pt, name):
     r = pt[name+"r"]
     phi = pt[name+"i"]
     return tf.complex(r * tf.cos(phi), r * tf.sin(phi))
 
-# alpha for rho(770)
+# alpha for rho(770) Eq(4.28) and Eq(4.29)
 with config.params_trans() as f1:
     g0 = read_complex(f1, "Lmdc->Lambda.rho(770)_g_ls_0")
     g1 = read_complex(f1, "Lmdc->Lambda.rho(770)_g_ls_1")
@@ -36,7 +37,7 @@ err1 = float(f1.get_error(alpha1))
 print("alpha Lambda rho = ",mean1, " +- ", err1)
 
 
-# alpha for Sigma(1385)+
+# alpha for Sigma(1385)+  Eq(4.32)
 with config.params_trans() as f2:
     g0 = read_complex(f2, "Lmdc->piz.Sigma(1385)p_g_ls_0")
     g1 = read_complex(f2, "Lmdc->piz.Sigma(1385)p_g_ls_1")
@@ -46,7 +47,7 @@ mean2 = float(alpha2)
 err2 = float(f2.get_error(alpha2))
 print("alpha sigma(1385)+ pi0 = ",mean2, " +- ", err2)
 
-# alpha for Sigma(1385)0
+# alpha for Sigma(1385)0 Eq(4.32)
 with config.params_trans() as f3:
     g0 = read_complex(f2, "Lmdc->pip.Sigma(1385)0_g_ls_0")
     g1 = read_complex(f2, "Lmdc->pip.Sigma(1385)0_g_ls_1")
