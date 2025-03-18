@@ -1,0 +1,111 @@
+data:
+    dat_order: [D1, D2, K]
+    data: data.dat
+    phsp: phsp.dat
+
+
+decay:
+    B:
+    - [D1D2, K]
+    - [D1K, D2]
+    - [D2K, D1]
+    D1D2: [D1, D2]
+    D1K: [D1, K]
+    D2K: [D2, K]
+
+particle:
+    $top: B
+    $finals: [D1, D2, K]
+    B:
+        J: 0
+        P: -1
+        mass: 5.27926
+        display: "$B^{+}$"
+    D1:
+        J: 0
+        P: -1
+        mass: 1.86961
+        display: "$D^{+}$"
+    D2:
+        J: 0
+        P: -1
+        mass: 1.86961
+        display: "$D^{-}$"
+    K:
+        J: 0
+        P: -1
+        mass: 0.493677
+        display: "$K^{+}$"
+    D1D2:
+    - psi(3770)
+    - chi(c0)(3930)
+    - chi(c2)(3930)
+    - psi(4040)
+    - psi(4160)
+    - psi(4415)
+    D1K: []
+    D2K:
+    - X0(2900)
+    - X1(2900)
+    - NR
+    psi(3770):
+        J: 1
+        P: -1
+        mass: 3.7781
+        width: 0.0272
+        display: "$\\psi(3770)$"
+    chi(c0)(3930):
+        J: 0
+        P: +1
+        mass: 3.9238
+        width: 0.0174
+        display: "$\\chi_{c0}(3930)$"
+    chi(c2)(3930):
+        J: 2
+        P: +1
+        mass: 3.9268
+        width: 0.0342
+        display: "$\\chi_{c2}(3930)$"
+    psi(4040):
+        J: 1
+        P: -1
+        mass: 4.039
+        width: 0.08
+        display: "$\\psi(4040)$"
+    psi(4160):
+        J: 1
+        P: -1
+        mass: 4.191
+        width: 0.070
+        display: "$\\psi(4160)$"
+    psi(4415):
+        J: 1
+        P: -1
+        mass: 4.421
+        width: 0.062
+        display: "$\\psi(4415)$"
+    X0(2900):
+        J: 0
+        P: +1
+        mass: 2.866
+        width: 0.057
+        display: "$X_0(2900)$"
+    X1(2900):
+        J: 1
+        P: -1
+        mass: 2.904
+        width: 0.110
+        display: "$X_1(2900)$"
+    NR:
+        J: 0
+        P: +1
+        mass: 4.4
+        model: exp_com
+        display: "Nonresonant"
+
+constrains:
+    decay:
+        fix_chain_idx: 0
+    fix_var:
+        NR_a: 0.08
+        NR_b: 0.0

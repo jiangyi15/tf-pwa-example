@@ -1,0 +1,22 @@
+{
+  "NR_a": 0.08,
+  "NR_b": 0.0,
+  "B->psi(3770).Kpsi(3770)->D1.D2_total_0r": 1.0,
+  "B->psi(3770).Kpsi(3770)->D1.D2_total_0i": 0.0,
+  "B->chi(c0)(3930).Kchi(c0)(3930)->D1.D2_total_0r": 0.51,
+  "B->chi(c0)(3930).Kchi(c0)(3930)->D1.D2_total_0i": 2.16,
+  "B->chi(c2)(3930).Kchi(c2)(3930)->D1.D2_total_0r": 0.70,
+  "B->chi(c2)(3930).Kchi(c2)(3930)->D1.D2_total_0i": 0.83,
+  "B->psi(4040).Kpsi(4040)->D1.D2_total_0r": 0.59,
+  "B->psi(4040).Kpsi(4040)->D1.D2_total_0i": 1.42,
+  "B->psi(4160).Kpsi(4160)->D1.D2_total_0r": 0.67,
+  "B->psi(4160).Kpsi(4160)->D1.D2_total_0i": 0.90,
+  "B->psi(4415).Kpsi(4415)->D1.D2_total_0r": 0.80,
+  "B->psi(4415).Kpsi(4415)->D1.D2_total_0i": -1.46,
+  "B->X0(2900).D1X0(2900)->D2.K_total_0r": 0.62,
+  "B->X0(2900).D1X0(2900)->D2.K_total_0i": 1.09,
+  "B->X1(2900).D1X1(2900)->D2.K_total_0r": 1.45,
+  "B->X1(2900).D1X1(2900)->D2.K_total_0i": 0.37,
+  "B->NR.D1NR->D2.K_total_0r": 1.29,
+  "B->NR.D1NR->D2.K_total_0i": -2.41
+}
