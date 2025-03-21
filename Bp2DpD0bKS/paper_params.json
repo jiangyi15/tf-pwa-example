@@ -1,0 +1,18 @@
+{
+  "NR_S_a": 0.476,
+  "NR_S_b": 0.0,
+  "X0(2900)_mass": 2.883,
+  "X0(2900)_width": 0.087,
+  "B->Ds1(2700).D2Ds1(2700)->K.D1_total_0r": 1.0,
+  "B->Ds1(2700).D2Ds1(2700)->K.D1_total_0i": 0.0,
+  "B->Ds2(2573).D2Ds2(2573)->K.D1_total_0r": -0.043,
+  "B->Ds2(2573).D2Ds2(2573)->K.D1_total_0i": -0.109,
+  "B->Ds1(2860).D2Ds1(2860)->K.D1_total_0r": -0.30,
+  "B->Ds1(2860).D2Ds1(2860)->K.D1_total_0i": 0.45,
+  "B->NR_S.D2NR_S->K.D1_total_0r": 1.17,
+  "B->NR_S.D2NR_S->K.D1_total_0i": -2.18,
+  "B->NR_P.D2NR_P->K.D1_total_0r": 1.44,
+  "B->NR_P.D2NR_P->K.D1_total_0i": 0.21,
+  "B->X0(2900).D1X0(2900)->D2.K_total_0r": -0.12,
+  "B->X0(2900).D1X0(2900)->D2.K_total_0i": 0.09,
+}

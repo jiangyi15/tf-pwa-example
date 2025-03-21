@@ -1,0 +1,83 @@
+data:
+    dat_order: [D1, D2, K]
+
+decay:
+    B:
+    - [D1D2, K]
+    - [D1K, D2]
+    - [D2K, D1]
+    D1D2: [D1, D2]
+    D2K: [D2, K]
+    D1K: [K, D1] # the order
+
+particle:
+    $top: B
+    $finals: [D1, D2, K]
+    B:
+        J: 0
+        P: -1
+        mass: 5.27925
+    D1:
+        J: 0
+        P: -1
+        mass: 1.86962
+        display: "$D^{-}$"
+    D2:
+        J: 0
+        P: -1
+        mass: 1.86486
+        display: "$D^{0}$"
+    K:
+        J: 0
+        P: -1
+        mass: 0.497614
+        display: "$K_{S}^{0}$"
+    D1D2: []
+    D1K:
+    - Ds2(2573)
+    - Ds1(2700)
+    - Ds1(2860)
+    - NR_S
+    - NR_P
+    D2K:
+    - X0(2900)
+    Ds1(2700):
+        J: 1
+        P: -1
+        mass: 2.714
+        width: 0.122
+        display: "$D_{s1}^{*}(2700)^{-}$"
+    Ds2(2573):
+        J: 2
+        P: +1
+        mass: 2.5691
+        width: 0.0169
+        display: "$D_{s2}^{*}(2573)^{-}$"
+    Ds1(2860):
+        J: 1
+        P: -1
+        mass: 2.859
+        width: 0.15
+        display: "$D_{s1}^{*}(2860)^{-}$"
+    X0(2900):
+        J: 0
+        P: +1
+        mass: 2.883
+        width: 0.087
+        display: "$T_{cs0}^{*}(2870)^{0}$"
+    NR_S:
+        J: 0
+        P: +1
+        mass: 2.7
+        model: exp_com
+        display: "NR (S-wave)"
+    NR_P:
+        J: 1
+        P: -1
+        mass: 2.7
+        model: one
+        display: "NR (P-wave)"
+
+constrains:
+    decay:
+        decay_d: 4.0
