@@ -1,0 +1,164 @@
+data:
+    dat_order: [ mup, mum,  Kp, Km]
+    extra_var:
+        time:
+            default: 0.0
+        tag:
+            default: 1
+    resolution_size: 25
+    data: data_angles_int.npy
+    data_time: data_t_smear_int.npy
+    data_tag: data_tag_int.npy
+    phsp: phsp_angles_double.npy
+    phsp_time: phsp_t_exp_double.npy
+    phsp_tag: phsp_tag1_double.npy
+    phsp_weight: phsp_t_weight_double_cut.npy
+    amp_model: time_dep_cp
+    preprocessor: angles
+    mode: angles
+    use_tf_function: True
+    jit_compile: True
+    cp_particles: [[mup, mum], [Kp, Km]]
+
+
+decay:
+    Bs:
+    - [Jpsi, phi, p_break: True , has_barrier_factor: False] # , model: time_dep_params]
+    Jpsi: [mup, mum, has_barrier_factor: False]
+    phi: [Kp, Km, has_barrier_factor: False]
+
+particle:
+    $top: Bs
+    $finals: [ mup, mum,  Kp, Km]
+    Bs:
+        J: 0
+        P: -1
+        mass: 5.36693
+    Jpsi:
+        J: 1
+        P: -1
+        C: -1
+        mass: 3.0969
+        model: one
+    phi: [phi1]
+    phi1:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+    phi10:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [0]
+    phi11:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [1]
+    phi12:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [2]
+    phi0:
+        J: 0
+        P: +1
+        mass: 1.020
+        model: one
+    mup:
+        J: 1/2
+        P: +1
+        mass: 0.1056583755
+    mum:
+        J: 1/2
+        P: -1
+        mass: 0.1056583755
+    Kp:
+        J: 0
+        P: -1
+        mass: 0.493677
+    Km:
+        J: 0
+        P: -1
+        mass: 0.493677
+
+constrains:
+    decay:
+        fix_chain_val: 1.0
+    fix_var:
+        Jpsi->mup.mum_g_ls_1i: 0.0
+        Jpsi->mup.mum_g_ls_1r: 0.7071067811865475
+        Bs->Jpsi.phi1_g_ls_2r: 0.34752555736777596
+        Bs->Jpsi.phi1_g_ls_2i: -3.23467610640054
+    free_var:
+    - Bs->Jpsi.phi1_g_ls_0r
+    - Bs->Jpsi.phi1_g_ls_0i
+
+plot:
+    angle:
+        Jpsi/mup:
+            # alpha:
+            #    display: "$\\phi_{\\mu}$"
+            cos(beta):
+                display: "$\\cos\\theta_{\\mu}$"
+        phi/Kp:
+            alpha:
+                display: "$\\phi_{K}$"
+            cos(beta):
+                display: "$\\cos\\theta_{K}$"
+    index:
+        time:
+            display: "time"
+    2Dplot:
+        angle1:
+            x: fx
+            y: fy
+            where:
+                fx: [angle, Jpsi/mup, "cos(beta)"]
+                fy: [angle, phi/Kp, "cos(beta)"]
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
+        angle2:
+            x: fx
+            y: fy
+            where:
+                fx: [angle, Jpsi/mup, "cos(beta)"]
+                fy: [angle, phi/Kp, "alpha"]
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
+        angle3:
+            x: fx
+            y: fy
+            where:
+                fx: [angle, phi/Kp, "cos(beta)"]
+                fy: [angle, phi/Kp, "alpha"]
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
+        angle1_time:
+            x: fx
+            y: exp(-time)
+            where:
+                fx: [angle, Jpsi/mup, cos(beta)]
+                fy: [angle, phi/Kp, cos(beta)]
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
+        angle2_time:
+            x: fy
+            y: exp(-time)
+            where:
+                fx: [angle, Jpsi/mup, cos(beta)]
+                fy: [angle, phi/Kp, cos(beta)]
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
+        angle3_time:
+            x: phi_Kp_alpha
+            y: exp(-time)
+            pull_scatter_style: {"s": 0}
+            plot_figs: [data_hist, fitted, pull]
