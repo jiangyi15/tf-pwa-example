@@ -1,0 +1,4 @@
+*.npy
+trans_*.json
+figure*/
+*.root
