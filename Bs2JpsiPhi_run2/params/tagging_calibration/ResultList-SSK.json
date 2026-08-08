@@ -1,0 +1,157 @@
+{ "Parameter": [
+        {
+          "Name": "eta_SSK_Run2",
+          "Value": 0.42388,
+          "Error": 0.0000
+        }
+        ],
+  "ResultSet": [
+{
+      "ResultSetLabel": "TaggingSS2016",
+      "Description" : [
+         "Tagging calibration parameters SS 2016 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2016",
+          "Value": 0.4459,
+          "Error": 0.0051
+        },
+        {
+          "Name": "p1_SSK_2016",
+          "Value": 0.7357,
+          "Error": 0.0608
+        },
+        {
+          "Name": "dp0_SSK_2016",
+            "Value": -0.0164,
+            "Error": 0.0009
+        },
+        {
+          "Name": "dp1_SSK_2016",
+            "Value": 0.0277,
+            "Error": 0.0089
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  , -0.064, 0.0,  0.0 ],
+        [ -0.064, 1.00  , 0.0,  0.0 ],
+        [ 0.0   , 0.0   , 1.00, 0.117],
+        [ 0.0   , 0.0   , 0.117,1.00]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0024, 0.0207, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0005, 0.0053, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0011, 0.0128, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingSS2017",
+      "Description" : [
+         "Tagging calibration parameters SS 2017 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2017",
+          "Value": 0.4387,
+          "Error": 0.0048
+        },
+        {
+          "Name": "p1_SSK_2017",
+          "Value": 0.6382,
+          "Error": 0.0574
+        },
+        {
+          "Name": "dp0_SSK_2017",
+            "Value": -0.0158,
+            "Error": 0.0008
+        },
+        {
+          "Name": "dp1_SSK_2017",
+            "Value": 0.0143,
+            "Error": 0.0083
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.049, 0.0, 0.0 ],
+        [ 0.049 ,  1.00, 0.0, 0.0 ],
+        [ 0.0,     0.0, 1.00, 0.128 ],
+        [ 0.0,     0.0, 0.128, 1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0013, 0.0402, 0.0, 0.0]
+  },
+  {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0004, 0.0045, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0009, 0.0093, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingSS2018",
+      "Description" : [
+         "Tagging calibration parameters SS 2018 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2018",
+          "Value": 0.4431,
+          "Error": 0.0050
+        },
+        {
+          "Name": "p1_SSK_2018",
+          "Value": 0.7321,
+          "Error": 0.0594
+        },
+        {
+          "Name": "dp0_SSK_2018",
+            "Value": -0.0158,
+            "Error": 0.0007
+        },
+        {
+          "Name": "dp1_SSK_2018",
+            "Value": 0.0229,
+            "Error": 0.0077
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.057, 0.0, 0.0],
+        [ 0.057 ,  1.00 , 0.0, 0.0],
+        [ 0.0,     0.0, 1.00, 0.111 ],
+        [ 0.0,     0.0, 0.111, 1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0019, 0.0351, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0004, 0.0045, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0007, 0.0074, 0.0, 0.0]
+        }
+  ]
+}
+
+
+]
+}
+

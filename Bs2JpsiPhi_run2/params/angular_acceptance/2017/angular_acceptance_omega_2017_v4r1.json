@@ -1,0 +1,108 @@
+{
+   "2017": {
+      "OmegaUnbiased": [
+         {
+            "Name": "omega1",
+            "Value": 1.0,
+            "Error": 0.0
+         },
+         {
+            "Name": "omega2",
+            "Value": 1.035183,
+            "Error": 0.001958
+         },
+         {
+            "Name": "omega3",
+            "Value": 1.033498,
+            "Error": 0.001914
+         },
+         {
+            "Name": "omega4",
+            "Value": 0.001341,
+            "Error": 0.00158
+         },
+         {
+            "Name": "omega5",
+            "Value": 0.0018916,
+            "Error": 0.0009617
+         },
+         {
+            "Name": "omega6",
+            "Value": -4.14e-05,
+            "Error": 0.0009825
+         },
+         {
+            "Name": "omega7",
+            "Value": 1.009904,
+            "Error": 0.001331
+         },
+         {
+            "Name": "omega8",
+            "Value": 0.00089,
+            "Error": 0.001232
+         },
+         {
+            "Name": "omega9",
+            "Value": 0.000453,
+            "Error": 0.00125
+         },
+         {
+            "Name": "omega10",
+            "Value": -0.00303,
+            "Error": 0.002499
+         }
+      ],
+      "OmegaBiased": [
+         {
+            "Name": "omega1",
+            "Value": 1.0,
+            "Error": 0.0
+         },
+         {
+            "Name": "omega2",
+            "Value": 1.022635,
+            "Error": 0.003922
+         },
+         {
+            "Name": "omega3",
+            "Value": 1.023419,
+            "Error": 0.003869
+         },
+         {
+            "Name": "omega4",
+            "Value": -0.000896,
+            "Error": 0.003469
+         },
+         {
+            "Name": "omega5",
+            "Value": 0.001989,
+            "Error": 0.001927
+         },
+         {
+            "Name": "omega6",
+            "Value": 0.001491,
+            "Error": 0.001898
+         },
+         {
+            "Name": "omega7",
+            "Value": 1.014277,
+            "Error": 0.002764
+         },
+         {
+            "Name": "omega8",
+            "Value": 0.000501,
+            "Error": 0.002511
+         },
+         {
+            "Name": "omega9",
+            "Value": 0.002154,
+            "Error": 0.002508
+         },
+         {
+            "Name": "omega10",
+            "Value": -0.004818,
+            "Error": 0.005161
+         }
+      ]
+   }
+}

@@ -1,0 +1,108 @@
+{
+     "2016": {
+          "AngularParameterUnbiased": [
+               {
+                    "Name": "f1",
+                    "Value": 1.0,
+                    "Error": 0.0
+               },
+               {
+                    "Name": "f2",
+                    "Value": 1.033235,
+                    "Error": 0.001681
+               },
+               {
+                    "Name": "f3",
+                    "Value": 1.033843,
+                    "Error": 0.001647
+               },
+               {
+                    "Name": "f4",
+                    "Value": 0.000454,
+                    "Error": 0.0013
+               },
+               {
+                    "Name": "f5",
+                    "Value": 0.0002125,
+                    "Error": 0.0007894
+               },
+               {
+                    "Name": "f6",
+                    "Value": 0.0005983,
+                    "Error": 0.0008008
+               },
+               {
+                    "Name": "f7",
+                    "Value": 1.012266,
+                    "Error": 0.00113
+               },
+               {
+                    "Name": "f8",
+                    "Value": 0.000823,
+                    "Error": 0.00102
+               },
+               {
+                    "Name": "f9",
+                    "Value": 0.001305,
+                    "Error": 0.001043
+               },
+               {
+                    "Name": "f10",
+                    "Value": -0.002159,
+                    "Error": 0.002157
+               }
+          ],
+          "AngularParameterBiased": [
+               {
+                    "Name": "f1",
+                    "Value": 1.0,
+                    "Error": 0.0
+               },
+               {
+                    "Name": "f2",
+                    "Value": 1.026871,
+                    "Error": 0.003147
+               },
+               {
+                    "Name": "f3",
+                    "Value": 1.024549,
+                    "Error": 0.003072
+               },
+               {
+                    "Name": "f4",
+                    "Value": 0.00286,
+                    "Error": 0.002445
+               },
+               {
+                    "Name": "f5",
+                    "Value": 0.002022,
+                    "Error": 0.001501
+               },
+               {
+                    "Name": "f6",
+                    "Value": 0.000673,
+                    "Error": 0.001533
+               },
+               {
+                    "Name": "f7",
+                    "Value": 1.016976,
+                    "Error": 0.002136
+               },
+               {
+                    "Name": "f8",
+                    "Value": -0.001622,
+                    "Error": 0.001903
+               },
+               {
+                    "Name": "f9",
+                    "Value": 0.001237,
+                    "Error": 0.001953
+               },
+               {
+                    "Name": "f10",
+                    "Value": 0.00164,
+                    "Error": 0.004098
+               }
+          ]
+     }
+}
