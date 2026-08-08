@@ -1,0 +1,181 @@
+data:
+    dat_order: [ mup, mum,  Kp, Km]
+    extra_var:
+        time:
+            default: 0.0
+        tag:
+            default: 1
+            dtype: float64
+        eta:
+            default: 0.3546
+            dtype: float64
+        #del_eta:
+        #    default: 0.0
+        #    dtype: float64
+        time_sigma:
+            default: 1.0
+    lazy_call: True
+    lazy_file: True
+    data: data_angles.npy
+    data_time: data_t_smear.npy
+    data_time_sigma: data_t_resolution.npy
+    data_tag: data_tag.npy
+    data_eta: data_eta.npy
+    #data_del_eta: data_del_eta.npy
+    data_weight: data_weight.npy
+    data_trigger: data_trigger.npy
+    data_year: data_year.npy
+    phsp: MC_angles_double.npy
+    phsp_time: MC_t_smear_double.npy
+    phsp_time_sigma: MC_t_resolution_double.npy
+    phsp_tag: MC_tag_double.npy
+    phsp_eta: MC_eta_double.npy
+    #phsp_del_eta: MC_del_eta_double.npy
+    phsp_weight: MC_weight_cut_double.npy
+    phsp_trigger: MC_trigger_double.npy
+    phsp_year: MC_year_double.npy
+    amp_model:
+        flavour_tag_mix:
+            base_model:
+                model: time_dep_cp
+
+    use_tf_function: True
+    preprocessor: angles
+    mode: angles
+    cp_particles: [[mup, mum], [Kp, Km]]
+
+
+decay:
+    Bs:
+    - [Jpsi, phi, p_break: True , has_barrier_factor: False] # , model: time_dep_params]
+    Jpsi: [mup, mum, has_barrier_factor: False]
+    phi: [Kp, Km, has_barrier_factor: False]
+
+particle:
+    $top: Bs
+    $finals: [ mup, mum,  Kp, Km]
+    Bs:
+        J: 0
+        P: -1
+        mass: 5.36693
+    Jpsi:
+        J: 1
+        P: -1
+        C: -1
+        mass: 3.0969
+        model: one
+    phi: [phi10, phi11, phi12]
+    phi1:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+    phi10:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [0]
+    phi11:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [1]
+    phi12:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+        production_params:
+            l_list: [2]
+    phi0:
+        J: 0
+        P: +1
+        mass: 1.020
+        model: one
+    mup:
+        J: 1/2
+        P: +1
+        mass: 0.1056583755
+    mum:
+        J: 1/2
+        P: -1
+        mass: 0.1056583755
+    Kp:
+        J: 0
+        P: -1
+        mass: 0.493677
+    Km:
+        J: 0
+        P: -1
+        mass: 0.493677
+
+constrains:
+    decay:
+        fix_chain_val: 1.0
+    fix_var:
+        Jpsi->mup.mum_g_ls_1i: 0.0
+        Jpsi->mup.mum_g_ls_1r: 0.7071067811865475
+
+plot:
+    angle:
+        Jpsi/mup:
+            cos(beta):
+                display: "$\\cos\\theta_{\\mu}$"
+        phi/Kp:
+            alpha:
+                display: "$\\phi_{K}$"
+            cos(beta):
+                display: "$\\cos\\theta_{K}$"
+    index:
+        time:
+            display: "time"
+    #2Dplot:
+    #    angle1:
+    #        x: fx
+    #        y: fy
+    #        where:
+    #            fx: [angle, Jpsi/mup, "cos(beta)"]
+    #            fy: [angle, phi/Kp, "cos(beta)"]
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
+    #    angle2:
+    #        x: fx
+    #        y: fy
+    #        where:
+    #            fx: [angle, Jpsi/mup, "cos(beta)"]
+    #            fy: [angle, phi/Kp, "alpha"]
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
+    #    angle3:
+    #        x: fx
+    #        y: fy
+    #        where:
+    #            fx: [angle, phi/Kp, "cos(beta)"]
+    #            fy: [angle, phi/Kp, "alpha"]
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
+    #    angle1_time:
+    #        x: fx
+    #        y: exp(-time)
+    #        where:
+    #            fx: [angle, Jpsi/mup, cos(beta)]
+    #            fy: [angle, phi/Kp, cos(beta)]
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
+    #    angle2_time:
+    #        x: fy
+    #        y: exp(-time)
+    #        where:
+    #            fx: [angle, Jpsi/mup, cos(beta)]
+    #            fy: [angle, phi/Kp, cos(beta)]
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
+    #    angle3_time:
+    #        x: phi_Kp_alpha
+    #        y: exp(-time)
+    #        pull_scatter_style: {"s": 0}
+    #        plot_figs: [data_hist, fitted, pull]
