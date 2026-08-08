@@ -1,0 +1,43 @@
+data:
+    dat_order: [ mup, mum,  Kp, Km]
+
+decay:
+    Bs:
+    - [Jpsi, phi]
+    Jpsi: [mup, mum]
+    phi: [Kp, Km]
+
+particle:
+    $top: Bs
+    $finals: [ mup, mum,  Kp, Km]
+    Bs:
+        J: 0
+        P: -1
+        mass: 5.36693
+    Jpsi:
+        J: 1
+        P: -1
+        C: -1
+        mass: 3.0969
+        model: one
+    phi:
+        J: 1
+        P: -1
+        mass: 1.020
+        model: one
+    mup:
+        J: 1/2
+        P: +1
+        mass: 0.1056583755
+    mum:
+        J: 1/2
+        P: -1
+        mass: 0.1056583755
+    Kp:
+        J: 0
+        P: -1
+        mass: 0.493677
+    Km:
+        J: 0
+        P: -1
+        mass: 0.493677
