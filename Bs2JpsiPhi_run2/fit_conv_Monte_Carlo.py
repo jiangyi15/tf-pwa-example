@@ -377,7 +377,7 @@ def main():
             logger.info(f"  {j}: ls_list={j.get_ls_list()}")
     
     logger.info("\nLoading initial amplitude parameters...")
-    config.set_params("final_params_amp.json")
+    config.set_params("final_params_Monte_Carlo.json")
     
     logger.info("\n" + "=" * 70)
     logger.info("Fixing all parameters except phis")
