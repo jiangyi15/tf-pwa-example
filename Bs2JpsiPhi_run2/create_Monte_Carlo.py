@@ -24,7 +24,7 @@ all_vars = [
     "helcosthetaK",
     "helcosthetaL",
     "helphi", 
-    "gb_weights",
+    "sw_p2vv",
     "B_ConstJpsi_M_1"
 ]
 
@@ -70,7 +70,7 @@ for key in all_vars + ["year"]:
 
 print(f"Total events after merge: {len(merged_data['B_ConstJpsi_M_1'])}")
 
-sw = merged_data["gb_weights"]
+sw = merged_data["sw_p2vv"]
 helcosthetaK = merged_data["helcosthetaK"]
 helcosthetaL = merged_data["helcosthetaL"]
 helphi = merged_data["helphi"]
