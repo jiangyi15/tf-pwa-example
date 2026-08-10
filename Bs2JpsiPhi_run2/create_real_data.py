@@ -9,6 +9,11 @@ import json
 
 from flavour_tagging import apply_tagging_calibration, load_tagging_params
 from time_resolution import calibrate_time_resolution, load_time_resolution_params
+from csp_factors import (
+    load_csp_factors_baseline,
+    compute_csp_for_events_baseline,
+    multiply_csp_into_weights,
+)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process real data for Bs2JpsiPhi analysis')
@@ -38,7 +43,8 @@ all_vars = [
     "OS_Combination_ETA", 
     "sigmat", 
     "sw",
-    "B_ConstJpsi_M_1"
+    "B_ConstJpsi_M_1",
+    "X_M",
 ]
 
 trigger_vars = [
@@ -126,6 +132,7 @@ helphi = merged_data["helphi"][cut_mask]
 year = merged_data["year"][cut_mask]
 
 b_constjpsi_mass = merged_data["B_ConstJpsi_M_1"][cut_mask]
+x_m = merged_data["X_M"][cut_mask]
 
 print("\n" + "="*60)
 print("Flavour Tagging Calibration and Combination")
@@ -205,6 +212,7 @@ trigger = trigger[valid_trigger_mask]
 year = year[valid_trigger_mask]
 
 b_constjpsi_mass = b_constjpsi_mass[valid_trigger_mask]
+x_m = x_m[valid_trigger_mask]
 
 os_tag = os_tag[valid_trigger_mask]
 ss_tag = ss_tag[valid_trigger_mask]
@@ -217,6 +225,34 @@ print(f"\nRemaining events after trigger filter: {n}")
 years_suffix = '_'.join(str(y) for y in selected_years)
 trigger_suffix = selected_trigger
 file_suffix = f"{years_suffix}_{trigger_suffix}"
+
+print("\n" + "="*60)
+print("Csp Factor Computation")
+print("="*60)
+
+csp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "params", "Csp")
+csp_factors = np.ones_like(sw, dtype=np.float64)
+if not os.path.isdir(csp_dir):
+    print(f"Warning: Csp directory not found at {csp_dir}, skipping Csp correction")
+else:
+    print(f"\nLoading Baseline Csp factors from {csp_dir}/CspFactorsAll.json")
+    csp_factors_baseline = load_csp_factors_baseline(csp_dir=csp_dir)
+    bin_summary = ", ".join(
+        f"[{f['Bin_ll']}-{f['Bin_ul']}]={f['Value']:.4f}" for f in csp_factors_baseline
+    )
+    print(f"  Baseline: {bin_summary}")
+
+    # Csp factors depend on m(K+K-) (X_M) in MeV.
+    # Common (Baseline) factors are used for all data-taking years.
+    # Events with mKK outside the covered range [990, 1050] MeV get factor 1.0.
+    csp_factors = compute_csp_for_events_baseline(
+        x_m, csp_factors_baseline
+    )
+    print(f"\nCsp factor range: {np.min(csp_factors):.4f} - {np.max(csp_factors):.4f}")
+    print(f"Csp factor mean:  {np.mean(csp_factors):.4f}")
+
+    sw = multiply_csp_into_weights(sw, csp_factors)
+    print(f"Weight range after Csp multiplication: {np.min(sw):.6f} - {np.max(sw):.6f}")
 
 print("\n" + "="*60)
 print("Saving Output Files")
@@ -232,6 +268,7 @@ np.save(f"data_eta_{file_suffix}.npy", eta)
 
 print("Saving other data...")
 np.save(f"data_weight_{file_suffix}.npy", sw)
+np.save(f"data_csp_{file_suffix}.npy", csp_factors)
 np.save(f"data_angles_{file_suffix}.npy", np.stack([np.arccos(helcosthetaL), np.arccos(helcosthetaK), helphi], axis=-1))
 np.save(f"data_trigger_{file_suffix}.npy", trigger)
 np.save(f"data_year_{file_suffix}.npy", year)
@@ -241,13 +278,14 @@ print(f"Time range: {np.min(time):.2f} - {np.max(time):.2f} ps")
 print(f"Resolution range: {np.min(sigmat_calibrated):.4f} - {np.max(sigmat_calibrated):.4f} ps")
 print(f"Tag range: {np.min(tag):.2f} - {np.max(tag):.2f}")
 print(f"Eta range: {np.min(eta):.2f} - {np.max(eta):.2f}")
+print(f"Csp factor range: {np.min(csp_factors):.4f} - {np.max(csp_factors):.4f}")
 print(f"Output files suffix: {file_suffix}")
 
 print(f"\nGenerated output files:")
 print(f"  Time: data_t_smear_{file_suffix}.npy")
 print(f"  Time resolution: data_t_resolution_{file_suffix}.npy")
 print(f"  Tagging: data_tag_{file_suffix}.npy, data_eta_{file_suffix}.npy")
-print(f"  Other: data_weight_{file_suffix}.npy, data_angles_{file_suffix}.npy, data_trigger_{file_suffix}.npy, data_year_{file_suffix}.npy")
+print(f"  Other: data_weight_{file_suffix}.npy, data_csp_{file_suffix}.npy, data_angles_{file_suffix}.npy, data_trigger_{file_suffix}.npy, data_year_{file_suffix}.npy")
 
 for y in years:
     y_mask = year == y
