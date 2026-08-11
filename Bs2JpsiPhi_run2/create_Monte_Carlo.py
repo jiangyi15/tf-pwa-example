@@ -2,6 +2,9 @@ import uproot
 import numpy as np
 import sys
 import argparse
+from tf_pwa.config_loader import ConfigLoader
+from tf_pwa.amp import time_dep
+import tensorflow as tf
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process Monte Carlo for Bs2JpsiPhi analysis')
@@ -82,6 +85,61 @@ n = len(b_constjpsi_mass)
 print(f"\nTotal events: {n}")
 
 print("\n" + "="*60)
+print("Computing |A_sim|^2 for amplitude correction")
+print("="*60)
+
+config = ConfigLoader("config_gen.yml")
+config.set_params("final_params_amp.json")
+
+f = config.get_particle_function("phi10")
+ha = f.ha
+
+batch_size = 250000
+amp_sq = np.zeros(n, dtype=np.float64)
+c1 = helcosthetaL
+c2 = helcosthetaK
+phi = helphi
+
+for i in range(0, n, batch_size):
+    end = min(i + batch_size, n)
+    p4 = ha.build_data(
+        {},
+        [np.array([0.]), c1[i:end], c2[i:end]],
+        [np.array([0.]), np.array([0.]), phi[i:end]]
+    )
+    data = config.data.cal_angle(p4)
+    data["time"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
+    data["tag"] = tf.constant(np.ones(end - i), dtype=tf.float64)
+    data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
+    data["del_eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
+    amp_sq[i:end] = config.get_amplitude()(data).numpy()
+
+    if (i // batch_size) % 4 == 0:
+        print(f"  Processed {end}/{n} events, |A|^2 range: [{amp_sq[i:end].min():.6f}, {amp_sq[i:end].max():.6f}]")
+
+n_low = np.sum(amp_sq < 1e-10)
+if n_low > 0:
+    print(f"  WARNING: {n_low} events have |A|^2 < 1e-10, clipping to minimum")
+amp_sq = np.clip(amp_sq, 1e-10, None)
+
+print(f"\n|A_sim|^2 statistics:")
+print(f"  Mean: {np.mean(amp_sq):.6f}")
+print(f"  Median: {np.median(amp_sq):.6f}")
+print(f"  Min: {np.min(amp_sq):.6f}")
+print(f"  Max: {np.max(amp_sq):.6f}")
+print(f"  Std: {np.std(amp_sq):.6f}")
+
+sw_raw = sw.copy()
+sw_corrected = sw_raw / amp_sq
+
+print(f"\nRaw weight (sw_p2vv) statistics:")
+print(f"  Mean: {np.mean(sw_raw):.6f}")
+print(f"  Std: {np.std(sw_raw):.6f}")
+print(f"\nCorrected weight (sw_p2vv / |A|^2) statistics:")
+print(f"  Mean: {np.mean(sw_corrected):.6f}")
+print(f"  Std: {np.std(sw_corrected):.6f}")
+
+print("\n" + "="*60)
 print("Generating trigger, tag, eta (random)")
 print("="*60)
 
@@ -112,7 +170,7 @@ np.save(f"MC_tag_{file_suffix}.npy", tag)
 np.save(f"MC_eta_{file_suffix}.npy", eta)
 
 print("Saving other data...")
-np.save(f"MC_weight_{file_suffix}.npy", sw)
+np.save(f"MC_weight_{file_suffix}.npy", sw_corrected)
 np.save(f"MC_angles_{file_suffix}.npy", np.stack([np.arccos(helcosthetaL), np.arccos(helcosthetaK), helphi], axis=-1))
 np.save(f"MC_trigger_{file_suffix}.npy", trigger)
 np.save(f"MC_year_{file_suffix}.npy", year)
@@ -138,7 +196,7 @@ def plot_distributions():
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
 
-    fig = plt.figure(figsize=(20, 14))
+    fig = plt.figure(figsize=(20, 15))
     gs = GridSpec(2, 3, figure=fig)
 
     ax1 = fig.add_subplot(gs[0, 0])
@@ -163,17 +221,20 @@ def plot_distributions():
     ax3.set_ylabel('sWeight')
     ax3.set_title('sWeight vs B_ConstJpsi_Mass')
 
-    ax4.hist(helcosthetaK, bins=50, weights=sw, density=True, alpha=0.7, color='cyan')
+    ax4.hist(helcosthetaK, bins=50, weights=sw, density=True, alpha=0.7, color='grey', label='raw')
+    ax4.hist(helcosthetaK, bins=50, weights=1/amp_sq, density=True, alpha=0.7, color='cyan', label='corrected')
     ax4.set_xlabel('cos(theta_K)')
     ax4.set_ylabel('Density')
     ax4.set_title('Helicity cos(theta_K) distribution (weighted)')
 
-    ax5.hist(helcosthetaL, bins=50, weights=sw, density=True, alpha=0.7, color='magenta')
+    ax5.hist(helcosthetaL, bins=50, weights=sw_raw, density=True, alpha=0.5, color='grey', label='raw')
+    ax5.hist(helcosthetaL, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='magenta', label='corrected')
     ax5.set_xlabel('cos(theta_L)')
     ax5.set_ylabel('Density')
     ax5.set_title('Helicity cos(theta_L) distribution (weighted)')
 
-    ax6.hist(helphi, bins=50, weights=sw, density=True, alpha=0.7, color='brown')
+    ax6.hist(helphi, bins=50, weights=sw_raw, density=True, alpha=0.5, color='grey', label='raw')
+    ax6.hist(helphi, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='brown', label='corrected')
     ax6.set_xlabel('phi (rad)')
     ax6.set_ylabel('Density')
     ax6.set_title('Helicity phi distribution (weighted)')
