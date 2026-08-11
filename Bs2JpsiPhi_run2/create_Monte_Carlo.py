@@ -89,7 +89,7 @@ print("Computing |A_sim|^2 for amplitude correction")
 print("="*60)
 
 config = ConfigLoader("config_gen.yml")
-config.set_params("final_params_amp.json")
+config.set_params("final_params_Monte_Carlo.json")
 
 f = config.get_particle_function("phi10")
 ha = f.ha
@@ -148,7 +148,7 @@ if selected_trigger == 'unbiased':
 elif selected_trigger == 'biased':
     trigger = np.ones(n, dtype=np.int32)
 else:
-    trigger = np.random.choice([0, 1], n)
+    trigger = np.random.choice([0, 1], n, p=[0.8, 0.2])
 
 tag = np.random.choice([-1, 0, 1], n, p=[0.4, 0.2, 0.4]).astype(np.int32)
 eta = np.random.random(n) * 0.5
@@ -196,7 +196,10 @@ def plot_distributions():
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
 
-    fig = plt.figure(figsize=(20, 15))
+    unbiased_mask = trigger == 0
+    biased_mask = trigger == 1
+
+    fig = plt.figure(figsize=(20, 12))
     gs = GridSpec(2, 3, figure=fig)
 
     ax1 = fig.add_subplot(gs[0, 0])

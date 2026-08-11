@@ -104,7 +104,7 @@ for year in years:
     elif selected_trigger == 'biased':
         trigger = np.ones(N_PER_YEAR, dtype=np.int32)
     else:
-        trigger = np.random.choice([0, 1], N_PER_YEAR)
+        trigger = np.random.choice([0, 1], N_PER_YEAR, p=[0.8, 0.2])
     all_trigger.append(trigger)
     
     t_exp = -np.log(np.random.random(N_PER_YEAR) * (np.exp(-t_min*gamma) - np.exp(-t_max*gamma)) + np.exp(-t_max*gamma))/gamma
@@ -250,31 +250,34 @@ def plot_distributions():
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
-    
+
     cos_theta_mu = np.cos(angles_merged[:, 0])
     cos_theta_K = np.cos(angles_merged[:, 1])
     phi_K = angles_merged[:, 2]
-    
+
     t_exp = t_exp_merged
-    
+
+    unbiased_mask = trigger_merged == 0
+    biased_mask = trigger_merged == 1
+
     fig = plt.figure(figsize=(20, 16))
     gs = GridSpec(3, 3, figure=fig)
-    
+
     # Row 1: Basic variable distributions (time, angles)
     ax_time = fig.add_subplot(gs[0, 0])
     ax_cosK = fig.add_subplot(gs[0, 1])
     ax_cosMu = fig.add_subplot(gs[0, 2])
-    
-    # Row 2: phi, eta distributions, time exp weight distribution
+
+    # Row 2: phi, eta distributions, time acceptance vs t
     ax_phi = fig.add_subplot(gs[1, 0])
     ax_eta = fig.add_subplot(gs[1, 1])
     ax_tacc_vs_t = fig.add_subplot(gs[1, 2])
-    
+
     # Row 3: Angular acceptance vs angles
     ax_aacc_cosK = fig.add_subplot(gs[2, 0])
     ax_aacc_cosMu = fig.add_subplot(gs[2, 1])
     ax_aacc_phi = fig.add_subplot(gs[2, 2])
-    
+
     # ========== Row 1: Basic variable distributions ==========
     ax_time.hist(t_exp, bins=100, weights=weight_merged, density=True, alpha=0.7, color='blue', label='Weighted')
     ax_time.hist(t_exp, bins=100, density=True, alpha=0.3, color='gray', label='Unweighted')
@@ -283,21 +286,21 @@ def plot_distributions():
     ax_time.set_title('Time distribution (weighted vs unweighted)')
     ax_time.set_yscale('log')
     ax_time.legend(loc='upper right')
-    
+
     ax_cosK.hist(cos_theta_K, bins=50, weights=weight_merged, density=True, alpha=0.7, color='red', label='Weighted')
     ax_cosK.hist(cos_theta_K, bins=50, density=True, alpha=0.3, color='gray', label='Unweighted')
     ax_cosK.set_xlabel('cos(theta_K)')
     ax_cosK.set_ylabel('Density')
     ax_cosK.set_title('cos(theta_K) distribution')
     ax_cosK.legend(loc='upper right')
-    
+
     ax_cosMu.hist(cos_theta_mu, bins=50, weights=weight_merged, density=True, alpha=0.7, color='green', label='Weighted')
     ax_cosMu.hist(cos_theta_mu, bins=50, density=True, alpha=0.3, color='gray', label='Unweighted')
     ax_cosMu.set_xlabel('cos(theta_mu)')
     ax_cosMu.set_ylabel('Density')
     ax_cosMu.set_title('cos(theta_mu) distribution')
     ax_cosMu.legend(loc='upper right')
-    
+
     # ========== Row 2: phi and eta distributions ==========
     ax_phi.hist(phi_K, bins=50, weights=weight_merged, density=True, alpha=0.7, color='orange', label='Weighted')
     ax_phi.hist(phi_K, bins=50, density=True, alpha=0.3, color='gray', label='Unweighted')
@@ -312,60 +315,67 @@ def plot_distributions():
     ax_eta.set_ylabel('Density')
     ax_eta.set_title('Eta distribution (weighted vs unweighted)')
     ax_eta.legend(loc='upper right')
-    
+
     # Time acceptance vs t (by trigger type)
-    ax_tacc_vs_t.scatter(t_exp, tacc_weight_merged, alpha=0.3, s=1, color='blue', label='Projection')
+    for mask, color, label in [(unbiased_mask, 'blue', 'Unbiased'), (biased_mask, 'red', 'Biased')]:
+        if np.any(mask):
+            ax_tacc_vs_t.scatter(t_exp[mask], tacc_weight_merged[mask], alpha=0.3, s=1, color=color, label=label)
     ax_tacc_vs_t.set_xlabel('t (ps)')
     ax_tacc_vs_t.set_ylabel('Time acceptance')
     ax_tacc_vs_t.set_title('Time acceptance vs t by trigger type')
     ax_tacc_vs_t.set_xscale('log')
     ax_tacc_vs_t.set_xlim(0.3, 11)
-    ax_tacc_vs_t.set_ylim(0.5, 1.5)
+    ax_tacc_vs_t.set_ylim(0.5, 2.5)
     ax_tacc_vs_t.legend(loc='upper right')
-   
-    # ========== Row 4: Angular acceptance 1D projections (integrated over other angles) ==========
-    # Define number of bins
+
+    # ========== Row 3: Angular acceptance 1D projections (by trigger type) ==========
     n_bins = 50
     
     # A(cosθ_K) = ∫∫ A(cosθ_μ, cosθ_K, φ_K) d(cosθ_μ) dφ_K
     cosK_bins = np.linspace(-1, 1, n_bins + 1)
     cosK_centers = (cosK_bins[:-1] + cosK_bins[1:]) / 2
-    cosK_proj, _ = np.histogram(cos_theta_K, bins=cosK_bins, weights=aacc_weight_merged)
-    cosK_count, _ = np.histogram(cos_theta_K, bins=cosK_bins)
-    cosK_proj = np.where(cosK_count > 0, cosK_proj / cosK_count, 0.0)
-    ax_aacc_cosK.plot(cosK_centers, cosK_proj, color='blue', linewidth=2, label='Projection')
+    for mask, color, label in [(unbiased_mask, 'blue', 'Unbiased'), (biased_mask, 'red', 'Biased')]:
+        if np.any(mask):
+            proj, _ = np.histogram(cos_theta_K[mask], bins=cosK_bins, weights=aacc_weight_merged[mask])
+            count, _ = np.histogram(cos_theta_K[mask], bins=cosK_bins)
+            proj = np.where(count > 0, proj / count, 0.0)
+            ax_aacc_cosK.plot(cosK_centers, proj, color=color, linewidth=2, label=label)
     ax_aacc_cosK.set_xlabel('cos(theta_K)')
     ax_aacc_cosK.set_ylabel('Angular acceptance (projected)')
-    ax_aacc_cosK.set_title('Angular acceptance vs cos(theta_K) (1D projection)')
+    ax_aacc_cosK.set_title('Angular acceptance vs cos(theta_K)')
     ax_aacc_cosK.legend(loc='upper right')
     ax_aacc_cosK.set_ylim(0.5, 1.5)
     
     # A(cosθ_μ) = ∫∫ A(cosθ_μ, cosθ_K, φ_K) d(cosθ_K) dφ_K
     cosMu_bins = np.linspace(-1, 1, n_bins + 1)
     cosMu_centers = (cosMu_bins[:-1] + cosMu_bins[1:]) / 2
-    cosMu_proj, _ = np.histogram(cos_theta_mu, bins=cosMu_bins, weights=aacc_weight_merged)
-    cosMu_count, _ = np.histogram(cos_theta_mu, bins=cosMu_bins)
-    cosMu_proj = np.where(cosMu_count > 0, cosMu_proj / cosMu_count, 0.0)
-    ax_aacc_cosMu.plot(cosMu_centers, cosMu_proj, color='green', linewidth=2, label='Projection')
+    for mask, color, label in [(unbiased_mask, 'green', 'Unbiased'), (biased_mask, 'red', 'Biased')]:
+        if np.any(mask):
+            proj, _ = np.histogram(cos_theta_mu[mask], bins=cosMu_bins, weights=aacc_weight_merged[mask])
+            count, _ = np.histogram(cos_theta_mu[mask], bins=cosMu_bins)
+            proj = np.where(count > 0, proj / count, 0.0)
+            ax_aacc_cosMu.plot(cosMu_centers, proj, color=color, linewidth=2, label=label)
     ax_aacc_cosMu.set_xlabel('cos(theta_mu)')
     ax_aacc_cosMu.set_ylabel('Angular acceptance (projected)')
-    ax_aacc_cosMu.set_title('Angular acceptance vs cos(theta_mu) (1D projection)')
+    ax_aacc_cosMu.set_title('Angular acceptance vs cos(theta_mu)')
     ax_aacc_cosMu.legend(loc='upper right')
     ax_aacc_cosMu.set_ylim(0.5, 1.5)
     
     # A(phi_K) = ∫∫ A(cosθ_μ, cosθ_K, φ_K) d(cosθ_μ) d(cosθ_K)
     phi_bins = np.linspace(-np.pi, np.pi, n_bins + 1)
     phi_centers = (phi_bins[:-1] + phi_bins[1:]) / 2
-    phi_proj, _ = np.histogram(phi_K, bins=phi_bins, weights=aacc_weight_merged)
-    phi_count, _ = np.histogram(phi_K, bins=phi_bins)
-    phi_proj = np.where(phi_count > 0, phi_proj / phi_count, 0.0)
-    ax_aacc_phi.plot(phi_centers, phi_proj, color='orange', linewidth=2, label='Projection')
+    for mask, color, label in [(unbiased_mask, 'orange', 'Unbiased'), (biased_mask, 'red', 'Biased')]:
+        if np.any(mask):
+            proj, _ = np.histogram(phi_K[mask], bins=phi_bins, weights=aacc_weight_merged[mask])
+            count, _ = np.histogram(phi_K[mask], bins=phi_bins)
+            proj = np.where(count > 0, proj / count, 0.0)
+            ax_aacc_phi.plot(phi_centers, proj, color=color, linewidth=2, label=label)
     ax_aacc_phi.set_xlabel('phi_K (rad)')
     ax_aacc_phi.set_ylabel('Angular acceptance (projected)')
-    ax_aacc_phi.set_title('Angular acceptance vs phi_K (1D projection)')
+    ax_aacc_phi.set_title('Angular acceptance vs phi_K')
     ax_aacc_phi.legend(loc='upper right')
     ax_aacc_phi.set_ylim(0.5, 1.5)
-    
+
     plt.tight_layout()
     plt.savefig(f'phsp_distributions_{file_suffix}.png', dpi=150, bbox_inches='tight')
     plt.close()
