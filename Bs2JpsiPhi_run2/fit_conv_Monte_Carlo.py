@@ -149,18 +149,20 @@ class AnglesPreprocessor(BasePreProcessor):
         return ret
 
 
-def fix_all_params_except_phis(config):
+def fix_selected_params(config, free_params_list=None):
     all_params = config.get_params()
     
-    phis_params = [
-        "Bs_poqi"
-    ]
+    if free_params_list is None:
+        free_params_list = ["Bs_poqi"]
     
     fixed_params = []
     free_params = []
     
+    if len(free_params_list) == 0:
+        return [], list(all_params.keys())
+    
     for name, val in all_params.items():
-        if any(phis in name for phis in phis_params):
+        if any(fp in name for fp in free_params_list):
             free_params.append(name)
         else:
             config.vm.set_fix(name, val)
@@ -382,8 +384,10 @@ def main():
     logger.info("\n" + "=" * 70)
     logger.info("Fixing all parameters except phis")
     logger.info("=" * 70)
+
+    free_params_list = ["Bs_poqi"]
     
-    fixed_params, free_params = fix_all_params_except_phis(config)
+    fixed_params, free_params = fix_selected_params(config, free_params_list)
     logger.info(f"Fixed parameters ({len(fixed_params)}):")
     for p in fixed_params[:10]:
         logger.info(f"  - {p}")

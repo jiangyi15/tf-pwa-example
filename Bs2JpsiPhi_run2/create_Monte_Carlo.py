@@ -26,9 +26,11 @@ print(f"Selected trigger: {selected_trigger}")
 all_vars = [
     "helcosthetaK",
     "helcosthetaL",
-    "helphi", 
+    "helphi",
     "sw_p2vv",
-    "B_ConstJpsi_M_1"
+    "B_ConstJpsi_M_1",
+    "B_ID_GenLvl",
+    "B_TRUETAU_GenLvl"
 ]
 
 def load_year_data(year):
@@ -78,18 +80,23 @@ helcosthetaK = merged_data["helcosthetaK"]
 helcosthetaL = merged_data["helcosthetaL"]
 helphi = merged_data["helphi"]
 year = merged_data["year"]
+b_id_genlvl = merged_data["B_ID_GenLvl"]
+b_truetau_ns = merged_data["B_TRUETAU_GenLvl"]
+#b_truetau = b_truetau_ns * 1000.  # Convert from ns to ps
 
 b_constjpsi_mass = merged_data["B_ConstJpsi_M_1"]
 
 n = len(b_constjpsi_mass)
 print(f"\nTotal events: {n}")
+print(f"B_s0 (B_ID_GenLvl=+531): {np.sum(b_id_genlvl > 0)} events")
+print(f"anti-B_s0 (B_ID_GenLvl=-531): {np.sum(b_id_genlvl < 0)} events")
 
 print("\n" + "="*60)
 print("Computing |A_sim|^2 for amplitude correction")
 print("="*60)
 
 config = ConfigLoader("config_gen.yml")
-config.set_params("final_params_Monte_Carlo.json")
+config.set_params("final_params_decay.json")
 
 f = config.get_particle_function("phi10")
 ha = f.ha
@@ -109,7 +116,9 @@ for i in range(0, n, batch_size):
     )
     data = config.data.cal_angle(p4)
     data["time"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
-    data["tag"] = tf.constant(np.ones(end - i), dtype=tf.float64)
+    #data["time"] = tf.constant(b_truetau_ns[i:end], dtype=tf.float64)
+    event_tag = np.where(b_id_genlvl[i:end] > 0, 1.0, -1.0).astype(np.float64)
+    data["tag"] = tf.constant(event_tag, dtype=tf.float64)
     data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
     data["del_eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
     amp_sq[i:end] = config.get_amplitude()(data).numpy()
@@ -130,6 +139,7 @@ print(f"  Max: {np.max(amp_sq):.6f}")
 print(f"  Std: {np.std(amp_sq):.6f}")
 
 sw_raw = sw.copy()
+
 sw_corrected = sw_raw / amp_sq
 
 print(f"\nRaw weight (sw_p2vv) statistics:")
@@ -225,19 +235,22 @@ def plot_distributions():
     ax3.set_title('sWeight vs B_ConstJpsi_Mass')
 
     ax4.hist(helcosthetaK, bins=50, weights=sw, density=True, alpha=0.7, color='grey', label='raw')
-    ax4.hist(helcosthetaK, bins=50, weights=1/amp_sq, density=True, alpha=0.7, color='cyan', label='corrected')
+    #ax4.hist(helcosthetaK, bins=50, weights=1/amp_sq, density=True, alpha=0.7, color='cyan', label='corrected')
+    ax4.hist(helcosthetaK, bins=50, weights=sw_corrected, density=True, alpha=0.7, color='cyan', label='corrected')
     ax4.set_xlabel('cos(theta_K)')
     ax4.set_ylabel('Density')
     ax4.set_title('Helicity cos(theta_K) distribution (weighted)')
 
     ax5.hist(helcosthetaL, bins=50, weights=sw_raw, density=True, alpha=0.5, color='grey', label='raw')
-    ax5.hist(helcosthetaL, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='magenta', label='corrected')
+    #ax5.hist(helcosthetaL, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='magenta', label='corrected')
+    ax5.hist(helcosthetaL, bins=50, weights=sw_corrected, density=True, alpha=0.5, color='magenta', label='corrected')
     ax5.set_xlabel('cos(theta_L)')
     ax5.set_ylabel('Density')
     ax5.set_title('Helicity cos(theta_L) distribution (weighted)')
 
     ax6.hist(helphi, bins=50, weights=sw_raw, density=True, alpha=0.5, color='grey', label='raw')
-    ax6.hist(helphi, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='brown', label='corrected')
+    #ax6.hist(helphi, bins=50, weights=1/amp_sq, density=True, alpha=0.5, color='brown', label='corrected')
+    ax6.hist(helphi, bins=50, weights=sw_corrected, density=True, alpha=0.5, color='brown', label='corrected')
     ax6.set_xlabel('phi (rad)')
     ax6.set_ylabel('Density')
     ax6.set_title('Helicity phi distribution (weighted)')
