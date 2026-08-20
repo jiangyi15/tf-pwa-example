@@ -71,8 +71,8 @@ python cut_Monte_Carlo.py --years 2018 --trigger all --seed 10
 
 | 命名前缀 | 归一化方式 | 说明 |
 |----------|-----------|------|
-| `phsp_fast` | Toy MC 归一化 | 使用快速 toy sample 做 phase space 积分，计算速度快但统计精度较低 |
-| `Monte_Carlo` | Full simulation 归一化 | 使用完整的 full simulation MC 做归一化，精度高但计算量大 |
+| `phsp_fast` | Toy MC 归一化 | 使用快速 toy sample 做 phase space 积分 |
+| `Monte_Carlo` | Full simulation 归一化 | 使用完整的 full simulation MC 做归一化 |
 | `pseudo_data` | 自验证归一化 | 将 full simulation MC 随机分成两部分：一部分作为 pseudo data，另一部分作为归一化 MC。用于验证分析流程的正确性 |
 
 ## Time 处理方式对比
@@ -82,17 +82,10 @@ python cut_Monte_Carlo.py --years 2018 --trigger all --seed 10
 | 不带 `time` | Rejection sampling 生成 | 通过指数衰减 + time acceptance + resolution smear 生成 toy time |
 | 带 `time` | ROOT 直接读取 | 直接使用 full simulation ROOT 文件中的 reconstructed time 变量，不额外生成 |
 
-**推荐使用带 `time` 的流程**，因为：
-- 避免了 rejection sampling 引入的统计涨落
-- 保留了 full simulation 中完整的 detector 效应
-- 拟合结果更平滑稳定
-
 ## 配置文件
 
 | 文件 | 说明 |
 |------|------|
-| `config_data.yml` | 真实数据配置 |
-| `config_gen.yml` | 振幅生成配置（用于计算 $|A|^2$） |
 | `config_conv_Monte_Carlo.yml` | Full simulation MC 拟合配置 |
 | `config_conv_Monte_Carlo_time.yml` | Full simulation MC (ROOT time) 拟合配置 |
 | `config_conv_pseudo_data.yml` | Pseudo data 拟合配置 |
