@@ -82,7 +82,7 @@ helphi = merged_data["helphi"]
 year = merged_data["year"]
 b_id_genlvl = merged_data["B_ID_GenLvl"]
 b_truetau_ns = merged_data["B_TRUETAU_GenLvl"]
-#b_truetau = b_truetau_ns * 1000.  # Convert from ns to ps
+b_truetau = b_truetau_ns * 1000.  # Convert from ns to ps
 
 b_constjpsi_mass = merged_data["B_ConstJpsi_M_1"]
 
@@ -116,7 +116,7 @@ for i in range(0, n, batch_size):
     )
     data = config.data.cal_angle(p4)
     data["time"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
-    #data["time"] = tf.constant(b_truetau_ns[i:end], dtype=tf.float64)
+    #data["time"] = tf.constant(b_truetau[i:end], dtype=tf.float64)
     event_tag = np.where(b_id_genlvl[i:end] > 0, 1.0, -1.0).astype(np.float64)
     data["tag"] = tf.constant(event_tag, dtype=tf.float64)
     data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
