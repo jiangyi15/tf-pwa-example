@@ -114,14 +114,19 @@ for i in range(0, n, batch_size):
         [np.array([0.]), c1[i:end], c2[i:end]],
         [np.array([0.]), np.array([0.]), phi[i:end]]
     )
-    data = config.data.cal_angle(p4)
-    data["time"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
-    #data["time"] = tf.constant(b_truetau[i:end], dtype=tf.float64)
-    event_tag = np.where(b_id_genlvl[i:end] > 0, 1.0, -1.0).astype(np.float64)
-    data["tag"] = tf.constant(event_tag, dtype=tf.float64)
-    data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
-    data["del_eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
-    amp_sq[i:end] = config.get_amplitude()(data).numpy()
+    t_grid = np.linspace(0.0, 15.0, 21, dtype=np.float64) 
+    dt = t_grid[1] - t_grid[0]
+    amp_sq_int = np.zeros(end - i, dtype=np.float64)
+    for tk in t_grid:
+        for tg in (1.0, -1.0):
+            data = config.data.cal_angle(p4)
+            data["time"] = tf.constant(np.full(end - i, tk), dtype=tf.float64)
+            data["tag"] = tf.constant(np.full(end - i, tg), dtype=tf.float64)
+            data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
+            data["del_eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
+            amp_sq_int += config.get_amplitude()(data).numpy()
+    amp_sq_int *= dt * 2.0
+    amp_sq[i:end] = amp_sq_int
 
     if (i // batch_size) % 4 == 0:
         print(f"  Processed {end}/{n} events, |A|^2 range: [{amp_sq[i:end].min():.6f}, {amp_sq[i:end].max():.6f}]")
@@ -153,23 +158,23 @@ print("\n" + "="*60)
 print("Generating trigger, tag, eta (random)")
 print("="*60)
 
-if selected_trigger == 'unbiased':
-    trigger = np.zeros(n, dtype=np.int32)
-elif selected_trigger == 'biased':
-    trigger = np.ones(n, dtype=np.int32)
-else:
-    trigger = np.random.choice([0, 1], n, p=[0.8, 0.2])
+years_suffix = '_'.join(str(y) for y in selected_years)
+trigger_suffix = selected_trigger
+file_suffix = f"{years_suffix}_{trigger_suffix}"
 
-tag = np.random.choice([-1, 0, 1], n, p=[0.4, 0.2, 0.4]).astype(np.int32)
-eta = np.random.random(n) * 0.5
+data_tag = np.load(f"data_tag_{file_suffix}.npy")
+data_eta = np.load(f"data_eta_{file_suffix}.npy")
+data_trigger = np.load(f"data_trigger_{file_suffix}.npy")
+idx_tag = np.random.randint(data_tag.shape[0], size=n)
+idx_eta = np.random.randint(data_eta.shape[0], size=n)
+idx_trigger = np.random.randint(data_trigger.shape[0], size=n)
+tag = data_tag[idx_tag]
+eta = data_eta[idx_eta]
+trigger = data_trigger[idx_trigger]
 
 print(f"  Tag range: {np.min(tag):.2f} - {np.max(tag):.2f}")
 print(f"  Eta range: {np.min(eta):.2f} - {np.max(eta):.2f}")
 print(f"  Trigger range: {np.min(trigger):.0f} - {np.max(trigger):.0f}")
-
-years_suffix = '_'.join(str(y) for y in selected_years)
-trigger_suffix = selected_trigger
-file_suffix = f"{years_suffix}_{trigger_suffix}"
 
 print("\n" + "="*60)
 print("Saving Output Files")

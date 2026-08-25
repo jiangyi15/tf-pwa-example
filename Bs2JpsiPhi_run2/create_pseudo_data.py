@@ -186,21 +186,29 @@ print("\n" + "="*60)
 print("Generating trigger, tag, eta for both datasets")
 print("="*60)
 
-if selected_trigger == 'unbiased':
-    data_trigger = np.zeros(n_data, dtype=np.int32)
-    mc_trigger = np.zeros(n_mc, dtype=np.int32)
-elif selected_trigger == 'biased':
-    data_trigger = np.ones(n_data, dtype=np.int32)
-    mc_trigger = np.ones(n_mc, dtype=np.int32)
-else:
-    data_trigger = np.random.choice([0, 1], n_data, p=[0.8, 0.2])
-    mc_trigger = np.random.choice([0, 1], n_mc, p=[0.8, 0.2])
+years_suffix = '_'.join(str(y) for y in selected_years)
+trigger_suffix = selected_trigger
+file_suffix = f"{years_suffix}_{trigger_suffix}"
 
-data_tag = np.random.choice([-1, 0, 1], n_data, p=[0.4, 0.2, 0.4]).astype(np.int32)
-data_eta = np.random.random(n_data) * 0.5
+real_data_tag = np.load(f"data_tag_{file_suffix}.npy")
+real_data_eta = np.load(f"data_eta_{file_suffix}.npy")
+real_data_trigger = np.load(f"data_trigger_{file_suffix}.npy")
 
-mc_tag = np.random.choice([-1, 0, 1], n_mc, p=[0.4, 0.2, 0.4]).astype(np.int32)
-mc_eta = np.random.random(n_mc) * 0.5
+idx_pseudo_data_tag = np.random.randint(real_data_tag.shape[0], size=n_data)
+idx_pseudo_data_eta = np.random.randint(real_data_eta.shape[0], size=n_data)
+idx_pseudo_data_trigger = np.random.randint(real_data_trigger.shape[0], size=n_data)
+
+data_tag = real_data_tag[idx_pseudo_data_tag]
+data_eta = real_data_eta[idx_pseudo_data_eta]
+data_trigger = real_data_trigger[idx_pseudo_data_trigger]
+
+idx_pseudo_mc_tag = np.random.randint(real_data_tag.shape[0], size=n_mc)
+idx_pseudo_mc_eta = np.random.randint(real_data_eta.shape[0], size=n_mc)
+idx_pseudo_mc_trigger = np.random.randint(real_data_trigger.shape[0], size=n_mc)
+
+mc_tag = real_data_tag[idx_pseudo_mc_tag]
+mc_eta = real_data_eta[idx_pseudo_mc_eta]
+mc_trigger = real_data_trigger[idx_pseudo_mc_trigger]
 
 print(f"pseudo_data - Tag range: {np.min(data_tag):.2f} - {np.max(data_tag):.2f}")
 print(f"pseudo_data - Eta range: {np.min(data_eta):.2f} - {np.max(data_eta):.2f}")
@@ -208,10 +216,6 @@ print(f"pseudo_data - Trigger range: {np.min(data_trigger):.0f} - {np.max(data_t
 print(f"pseudo_MC   - Tag range: {np.min(mc_tag):.2f} - {np.max(mc_tag):.2f}")
 print(f"pseudo_MC   - Eta range: {np.min(mc_eta):.2f} - {np.max(mc_eta):.2f}")
 print(f"pseudo_MC   - Trigger range: {np.min(mc_trigger):.0f} - {np.max(mc_trigger):.0f}")
-
-years_suffix = '_'.join(str(y) for y in selected_years)
-trigger_suffix = selected_trigger
-file_suffix = f"{years_suffix}_{trigger_suffix}"
 
 print("\n" + "="*60)
 print("Saving pseudo_data Output Files")

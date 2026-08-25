@@ -155,23 +155,24 @@ print("\n" + "="*60)
 print("Generating trigger, tag, eta (random)")
 print("="*60)
 
-if selected_trigger == 'unbiased':
-    trigger = np.zeros(n, dtype=np.int32)
-elif selected_trigger == 'biased':
-    trigger = np.ones(n, dtype=np.int32)
-else:
-    trigger = np.random.choice([0, 1], n, p=[0.8, 0.2])
+years_suffix = '_'.join(str(y) for y in selected_years)
+trigger_suffix = selected_trigger
+file_suffix = f"{years_suffix}_{trigger_suffix}"
 
-tag = np.random.choice([-1, 0, 1], n, p=[0.4, 0.2, 0.4]).astype(np.int32)
-eta = np.random.random(n) * 0.5
+data_tag = np.load(f"data_tag_{file_suffix}.npy")
+data_eta = np.load(f"data_eta_{file_suffix}.npy")
+data_trigger = np.load(f"data_trigger_{file_suffix}.npy")
+idx_tag = np.random.randint(data_tag.shape[0], size=n)
+idx_eta = np.random.randint(data_eta.shape[0], size=n)
+idx_trigger = np.random.randint(data_trigger.shape[0], size=n)
+
+tag = data_tag[idx_tag]
+eta = data_eta[idx_eta]
+trigger = data_trigger[idx_trigger]
 
 print(f"  Tag range: {np.min(tag):.2f} - {np.max(tag):.2f}")
 print(f"  Eta range: {np.min(eta):.2f} - {np.max(eta):.2f}")
 print(f"  Trigger range: {np.min(trigger):.0f} - {np.max(trigger):.0f}")
-
-years_suffix = '_'.join(str(y) for y in selected_years)
-trigger_suffix = selected_trigger
-file_suffix = f"{years_suffix}_{trigger_suffix}"
 
 print("\n" + "="*60)
 print("Saving Output Files")
