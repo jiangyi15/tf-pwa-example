@@ -9,9 +9,6 @@ data:
         eta:
             default: 0.3546
             dtype: float64
-        #del_eta:
-        #    default: 0.0
-        #    dtype: float64
         time_sigma:
             default: 1.0
     lazy_call: True
@@ -21,19 +18,13 @@ data:
     data_time_sigma: pseudo_data_t_resolution.npy
     data_tag: pseudo_data_tag.npy
     data_eta: pseudo_data_eta.npy
-    #data_del_eta: pseudo_data_del_eta.npy
     data_weight: pseudo_data_weight.npy
-    data_trigger: pseudo_data_trigger.npy
-    data_year: pseudo_data_year.npy
     phsp: pseudo_MC_angles_double.npy
     phsp_time: pseudo_MC_t_smear_double.npy
     phsp_time_sigma: pseudo_MC_t_resolution_double.npy
     phsp_tag: pseudo_MC_tag_double.npy
     phsp_eta: pseudo_MC_eta_double.npy
-    #phsp_del_eta: pseudo_MC_del_eta_double.npy
     phsp_weight: pseudo_MC_weight_cut_double.npy
-    phsp_trigger: pseudo_MC_trigger_double.npy
-    phsp_year: pseudo_data_year.npy
     amp_model:
         flavour_tag_mix:
             base_model:

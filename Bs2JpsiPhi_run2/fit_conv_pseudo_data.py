@@ -193,10 +193,10 @@ def validate_fit_result(config, logger):
     
     try:
         with config.params_trans() as pt:
-            phi_s_val = float(pt["Bs_poqi"]())
+            phi_s_val = float(pt["Bs_poqi"].numpy())
             phi_s_err = float(pt.get_error({"phi_s": pt["Bs_poqi"]})["phi_s"])
             
-            expected_phi_s = -0.039
+            expected_phi_s = -0.03
             expected_err = 0.022
             
             n_sigma = abs(phi_s_val - expected_phi_s) / phi_s_err if phi_s_err > 0 else float('inf')
@@ -356,7 +356,7 @@ def main():
         f"pseudo_MC_tag_double_{file_suffix}.npy",
         f"pseudo_MC_eta_double_{file_suffix}.npy",
         f"pseudo_MC_weight_cut_double_{file_suffix}.npy",
-        "final_params_pseudo_data.json",
+        "final_params_conv_pseudo_data.json",
     ]
     
     try:
@@ -379,13 +379,122 @@ def main():
             logger.info(f"  {j}: ls_list={j.get_ls_list()}")
     
     logger.info("\nLoading initial amplitude parameters...")
-    config.set_params("final_params_pseudo_data.json")
+    config.set_params("final_params_conv_pseudo_data.json")
+
+    # ============================================================
+    # Check parameters against physical results
+    # ============================================================
+    print("\n" + "=" * 80)
+    print("Check parameters against physical results")
+    print("=" * 80)
+
+    # Physics results (LHCb results)
+    expected_params = {
+        "delta_m": 17.8,      # Δm_s [ps⁻¹]
+        "delta_gamma": 0.08543,  # ΔΓ_s [ps⁻¹]
+        "gamma": 0.6614,      # Γ_s [ps⁻¹]
+        "phi_s": -0.03,       # φ_s [rad]
+        "A0_sq": 0.524176,      # |A₀(0)|² (from decay card: 0.724²)
+        "Aparallel_sq": 0.225625,  # |A_∥(0)|² (from decay card: 0.475²)
+        "Aperp_sq": 0.250000,   # |A_⊥(0)|² (from decay card: 0.500²)
+        "delta_parallel": 3.26,  # δ_∥ - δ₀ [rad]
+        "delta_perp": 3.08,      # δ_⊥ - δ₀ [rad]
+    }
+
+    # Convert tf-pwa parameters to physical results
+    with config.params_trans() as pt:
+        # B_s mixing parameters
+        bs_delta_m = float(pt["Bs_delta_m"].numpy())
+        bs_delta_gamma = -float(pt["Bs_delta_gamma"].numpy())  # Attention: ΔΓ_s has negative sign convention
+        bs_gamma = float(pt["Bs_gamma"].numpy())
+        bs_phi_s = float(pt["Bs_poqi"].numpy())  # φ_s is Bs_poqi
+
+        print("\n1. B_s mixing parameters comparison:")
+        print("-" * 80)
+        print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+        print(f"  {'-'*75}")
+
+        for name, actual, expected in [
+            ("Δm_s", bs_delta_m, expected_params["delta_m"]),
+            ("ΔΓ_s", bs_delta_gamma, expected_params["delta_gamma"]),
+            ("Γ_s", bs_gamma, expected_params["gamma"]),
+            ("φ_s", bs_phi_s, expected_params["phi_s"]),
+        ]:
+            diff = actual - expected
+            status = "✅" if abs(diff) < 0.01 else "❌"
+            print(f"  {name:<20} {actual:<15.5f} {expected:<15.5f} {diff:+.5f} {status:<10}")
+
+        # Polarization amplitude parameters
+        rho0 = float(pt["Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r"].numpy())
+        phi0 = float(pt["Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i"].numpy())
+        rho1 = float(pt["Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r"].numpy())
+        phi1 = float(pt["Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i"].numpy())
+        rho2 = float(pt["Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r"].numpy())
+        phi2 = float(pt["Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i"].numpy())
+
+        # Convert to complex numbers
+        g0 = tf.complex(rho0 * tf.cos(phi0), rho0 * tf.sin(phi0))
+        g1 = tf.complex(rho1 * tf.cos(phi1), rho1 * tf.sin(phi1))
+        g2 = tf.complex(rho2 * tf.cos(phi2), rho2 * tf.sin(phi2))
+
+        # Convert to physical polarization amplitudes
+        A0 = - g0 * math.sqrt(1/3) + g2 * math.sqrt(2/3)
+        Aperp = -g1
+        Aparallel = -g0 * math.sqrt(2/3) - g2 * math.sqrt(1/3)
+
+        # Compute physical quantities
+        A0_sq = np.abs(A0)**2
+        Aperp_sq = np.abs(Aperp)**2
+        Aparallel_sq = np.abs(Aparallel)**2
+
+        # Phase differences
+        phi_range = lambda x: (x - 0)% (2*math.pi) + 0
+        delta_perp_minus_0 = phi_range(-tf.math.angle(Aperp/A0))
+        delta_parallel_minus_0 = phi_range(-tf.math.angle(Aparallel/A0))
+
+        print("\n2. Amplitude parameters comparison:")
+        print("-" * 80)
+        print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+        print(f"  {'-'*75}")
+
+        for name, actual, expected in [
+            ("|A₀(0)|²", A0_sq, expected_params["A0_sq"]),
+            ("|A_⊥(0)|²", Aperp_sq, expected_params["Aperp_sq"]),
+            ("|A_∥(0)|²", Aparallel_sq, expected_params["Aparallel_sq"]),
+        ]:
+            diff = actual - expected
+            status = "✅" if abs(diff) < 0.01 else "❌"
+            print(f"  {name:<20} {actual:<15.6f} {expected:<15.4f} {diff:+.6f} {status:<10}")
+
+        print("\n3. Phase difference parameters comparison:")
+        print("-" * 80)
+        print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+        print(f"  {'-'*75}")
+
+        for name, actual, expected in [
+            ("δ_⊥ - δ₀", delta_perp_minus_0, expected_params["delta_perp"]),
+            ("δ_∥ - δ₀", delta_parallel_minus_0, expected_params["delta_parallel"]),
+        ]:
+            diff = actual - expected
+            status = "✅" if abs(diff) < 0.05 else "❌"
+            print(f"  {name:<20} {actual:<15.4f} {expected:<15.2f} {diff:+.4f} {status:<10}")
+
+    print("=" * 80)
+    print("Parameter check completed")
+    print("=" * 80 + "\n")
     
     logger.info("\n" + "=" * 70)
     logger.info("Fixing all parameters except phis")
     logger.info("=" * 70)
 
-    free_params_list = ["Bs_poqi"]
+    free_params_list = ["Bs_poqi", "Bs_delta_gamma", "Bs_gamma"# "Bs_delta_m"
+    #"Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r",
+    #"Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i",
+    #"Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r",
+    #"Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i",
+    #"Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r",
+    #"Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i"
+    ]
     
     fixed_params, free_params = fix_selected_params(config, free_params_list)
     logger.info(f"Fixed parameters ({len(fixed_params)}):")
@@ -398,6 +507,15 @@ def main():
     for p in free_params:
         logger.info(f"  - {p}")
     
+    with config.params_trans() as pt:
+        print("Before fit:")
+        print(f"  phi10.total_0r = {float(pt['Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi10.total_0i = {float(pt['Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i'].numpy())}")
+        print(f"  phi11.total_0r = {float(pt['Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi11.total_0i = {float(pt['Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i'].numpy())}")
+        print(f"  phi12.total_0r = {float(pt['Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi12.total_0i = {float(pt['Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i'].numpy())}")
+
     logger.info("\n" + "=" * 70)
     logger.info("Starting Fit")
     logger.info("=" * 70)
@@ -421,6 +539,15 @@ def main():
         os.remove(temp_config_path)
         raise
     
+    with config.params_trans() as pt:
+        print("After fit:")
+        print(f"  phi10.total_0r = {float(pt['Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi10.total_0i = {float(pt['Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i'].numpy())}")
+        print(f"  phi11.total_0r = {float(pt['Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi11.total_0i = {float(pt['Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i'].numpy())}")
+        print(f"  phi12.total_0r = {float(pt['Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r'].numpy())}")
+        print(f"  phi12.total_0i = {float(pt['Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i'].numpy())}")
+
     logger.info("\n" + "=" * 70)
     logger.info("Validating Fit Results")
     logger.info("=" * 70)
@@ -446,33 +573,45 @@ def main():
     trans_errors = pt.get_error(trans_params)
     
     ref_params = {
-        "δ⊥ - δ0": [2.903, 0.0075],
-        "δ∥ - δ0": [3.146, 0.0061],
-        "|A⊥|^2": [0.2463, 0.0023],
-        "|A0|^2": [0.5179, 0.0017],
-        "|A∥|^2": [1.0 - 0.2463 - 0.5179, 0.0],
-        "∆Γ": [0.0845, 0.0044],
-        "Γ": [-0.0056, 0.0014],
-        "∆m": [17.743, 0.033],
+        "δ⊥ - δ0": [3.08, 0.0075],
+        "δ∥ - δ0": [3.26, 0.0061],
+        "|A⊥|^2": [0.250000, 0.0023],
+        "|A0|^2": [0.524176, 0.0017],
+        "|A∥|^2": [0.225625, 0.0],
+        "∆Γ": [0.08543, 0.0044],
+        "Γ": [0.6614, 0.0014],
+        "∆m": [17.8, 0.033],
         "production asymmetry": [0, 0],
-        "|λ|": [1.001, 0.011],
-        "φ_s": [-0.039, 0.022]
+        "|λ|": [1.0, 0.011],
+        "φ_s": [-0.03, 0.022]
     }
     
     logger.info("\nFit Results:")
-    logger.info(f"{'Parameter':<25} {'Value':<12} {'Error':<12} {'Reference':<12}")
+    logger.info(f"{'Parameter':<25} {'Value':<12} {'Error':<12} {'Reference':<12} {'n_sigma':<10}")
     logger.info("-" * 70)
-    
+
     save_params = {}
     for name in trans_params:
         v, e = trans_params[name], trans_errors[name]
+        v_f, e_f = float(v), float(e)
         ref_val = ref_params.get(name, [None, None])[0]
         ref_str = f"{ref_val:.5f}" if ref_val is not None else "N/A"
-        logger.info(f"{name:<25} {float(v):<12.5f} {float(e):<12.5f} {ref_str:<12}")
+
+        # Floating parameters (error > 0): calculate n_sigma = |Value - Reference| / Error
+        # Fixed parameters (error == 0): show "-"
+        if e_f > 0 and ref_val is not None:
+            n_sigma = abs(v_f - ref_val) / e_f
+            n_sigma_str = f"{n_sigma:.2f}σ"
+        else:
+            n_sigma = None
+            n_sigma_str = "-"
+
+        logger.info(f"{name:<25} {v_f:<12.5f} {e_f:<12.5f} {ref_str:<12} {n_sigma_str:<10}")
         save_params[name] = {
-            "value": float(v),
-            "error": float(e),
-            "reference": ref_val
+            "value": v_f,
+            "error": e_f,
+            "reference": ref_val,
+            "n_sigma": n_sigma
         }
     
     fit_result.extra = {
@@ -505,10 +644,10 @@ def main():
     os.makedirs(plot_dir, exist_ok=True)
     
     config.plot_partial_wave(plot_pull=True, prefix=f"{plot_dir}/")
-    config.plot_partial_wave(plot_pull=True, prefix=f"{plot_dir}/tagp_", 
-                              cut_function=lambda x: x["tag"] > 0)
-    config.plot_partial_wave(plot_pull=True, prefix=f"{plot_dir}/tagm_", 
-                              cut_function=lambda x: x["tag"] < 0)
+    #config.plot_partial_wave(plot_pull=True, prefix=f"{plot_dir}/tagp_", 
+    #                          cut_function=lambda x: x["tag"] > 0)
+    #config.plot_partial_wave(plot_pull=True, prefix=f"{plot_dir}/tagm_", 
+    #                          cut_function=lambda x: x["tag"] < 0)
     
     logger.info(f"Plots saved to: {plot_dir}/")
     

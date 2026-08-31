@@ -1,6 +1,7 @@
 import uproot
 import numpy as np
 import sys
+import math
 import argparse
 from tf_pwa.config_loader import ConfigLoader
 from tf_pwa.amp import time_dep
@@ -8,6 +9,7 @@ import tensorflow as tf
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Create pseudo-experiment data and pseudo MC from MC ROOT files')
+    parser.add_argument('--seed', type=int, default=10, help='Random seed (default: 10)')
     parser.add_argument('--years', type=str, default='2015,2016,2017,2018',
                         help='Years to process, comma-separated (default: 2015,2016,2017,2018)')
     parser.add_argument('--trigger', type=str, default='all',
@@ -17,21 +19,28 @@ def parse_args():
 
 args = parse_args()
 
+seed = args.seed
+np.random.seed(seed)
+
 selected_years = [int(y.strip()) for y in args.years.split(',')]
 selected_trigger = args.trigger
 
 print(f"Selected years: {selected_years}")
 print(f"Selected trigger: {selected_trigger}")
+print(f"Random seed: {seed}")
 
 all_vars = [
     "helcosthetaK",
     "helcosthetaL",
     "helphi",
     "time",
+    "sigmat",
     "sw_p2vv",
     "B_ConstJpsi_M_1",
+    #"B_ID",
     "B_ID_GenLvl",
-    "B_TRUETAU_GenLvl"
+    "B_TRUETAU"
+    #"B_TRUETAU_GenLvl"
 ]
 
 def load_year_data(year):
@@ -77,6 +86,16 @@ for key in all_vars + ["year"]:
 n_total = len(merged_data['B_ConstJpsi_M_1'])
 print(f"Total events after merge: {n_total}")
 
+# Filter out events with invalid B_TRUETAU (sentinel value -1 causes amplitude overflow)
+valid_mask = merged_data['B_TRUETAU'] >= 0
+n_invalid = int(np.sum(~valid_mask))
+if n_invalid > 0:
+    print(f"Filtering out {n_invalid} events with B_TRUETAU < 0 (sentinel values)")
+    for key in all_vars + ["year"]:
+        merged_data[key] = merged_data[key][valid_mask]
+n_total = len(merged_data['B_ConstJpsi_M_1'])
+print(f"Events after filtering: {n_total}")
+
 print("\n" + "="*60)
 print("Randomly splitting into pseudo_data (50%) and pseudo_MC (50%)")
 print("="*60)
@@ -103,9 +122,12 @@ data_helcosthetaK = data_dict["helcosthetaK"]
 data_helcosthetaL = data_dict["helcosthetaL"]
 data_helphi = data_dict["helphi"]
 data_time = data_dict["time"]
+data_sigmat = data_dict["sigmat"]
 data_year = data_dict["year"]
-data_b_id_genlvl = data_dict["B_ID_GenLvl"]
-data_b_truetau_ns = data_dict["B_TRUETAU_GenLvl"]
+#data_b_id = data_dict["B_ID"]
+data_b_id = data_dict["B_ID_GenLvl"]
+data_b_truetau_ns = data_dict["B_TRUETAU"]
+#data_b_truetau_ns = data_dict["B_TRUETAU_GenLvl"]
 data_b_truetau = data_b_truetau_ns * 1000.
 data_b_constjpsi_mass = data_dict["B_ConstJpsi_M_1"]
 
@@ -115,9 +137,12 @@ mc_helcosthetaK = mc_dict["helcosthetaK"]
 mc_helcosthetaL = mc_dict["helcosthetaL"]
 mc_helphi = mc_dict["helphi"]
 mc_time = mc_dict["time"]
+mc_sigmat = mc_dict["sigmat"]
 mc_year = mc_dict["year"]
-mc_b_id_genlvl = mc_dict["B_ID_GenLvl"]
-mc_b_truetau_ns = mc_dict["B_TRUETAU_GenLvl"]
+#mc_b_id = mc_dict["B_ID"]
+mc_b_id = mc_dict["B_ID_GenLvl"]
+mc_b_truetau_ns = mc_dict["B_TRUETAU"]
+#mc_b_truetau_ns = mc_dict["B_TRUETAU_GenLvl"]
 mc_b_truetau = mc_b_truetau_ns * 1000.
 mc_b_constjpsi_mass = mc_dict["B_ConstJpsi_M_1"]
 
@@ -131,8 +156,110 @@ print("\n" + "="*60)
 print("Computing |A_sim|^2 for pseudo_MC amplitude correction")
 print("="*60)
 
-config = ConfigLoader("config_gen.yml")
+config = ConfigLoader("config_gen_pseudo_data.yml")
 config.set_params("final_params_decay.json")
+
+# ============================================================
+# Check parameters against decay file
+# ============================================================
+print("\n" + "=" * 80)
+print("Check parameters against physical results")
+print("=" * 80)
+
+# Physics results (LHCb results)
+expected_params = {
+    "delta_m": 17.8,      # Δm_s [ps⁻¹]
+    "delta_gamma": 0.08543,  # ΔΓ_s [ps⁻¹]
+    "gamma": 0.6614,      # Γ_s [ps⁻¹]
+    "phi_s": -0.03,       # φ_s [rad]
+    "A0_sq": 0.524176,      # |A₀(0)|² (from decay card: 0.724²)
+    "Aparallel_sq": 0.225625,  # |A_∥(0)|² (from decay card: 0.475²)
+    "Aperp_sq": 0.250000,   # |A_⊥(0)|² (from decay card: 0.500²)
+    "delta_parallel": 3.26,  # δ_∥ - δ₀ [rad]
+    "delta_perp": 3.08,      # δ_⊥ - δ₀ [rad]
+}
+
+# Convert tf-pwa parameters to physical results
+with config.params_trans() as pt:
+    # B_s mixing parameters
+    bs_delta_m = float(pt["Bs_delta_m"].numpy())
+    bs_delta_gamma = -float(pt["Bs_delta_gamma"].numpy())  # Attention: ΔΓ_s has negative sign convention
+    bs_gamma = float(pt["Bs_gamma"].numpy())
+    bs_phi_s = float(pt["Bs_poqi"].numpy())  # φ_s is Bs_poqi
+    
+    print("\n1. B_s mixing parameters comparison:")
+    print("-" * 80)
+    print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+    print(f"  {'-'*75}")
+    
+    for name, actual, expected in [
+        ("Δm_s", bs_delta_m, expected_params["delta_m"]),
+        ("ΔΓ_s", bs_delta_gamma, expected_params["delta_gamma"]),
+        ("Γ_s", bs_gamma, expected_params["gamma"]),
+        ("φ_s", bs_phi_s, expected_params["phi_s"]),
+    ]:
+        diff = actual - expected
+        status = "✅" if abs(diff) < 0.01 else "❌"
+        print(f"  {name:<20} {actual:<15.5f} {expected:<15.5f} {diff:+.5f} {status:<10}")
+    
+    # Polarization amplitude parameters
+    rho0 = float(pt["Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r"].numpy())
+    phi0 = float(pt["Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i"].numpy())
+    rho1 = float(pt["Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r"].numpy())
+    phi1 = float(pt["Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i"].numpy())
+    rho2 = float(pt["Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r"].numpy())
+    phi2 = float(pt["Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i"].numpy())
+    
+    # Convert to complex numbers
+    g0 = tf.complex(rho0 * tf.cos(phi0), rho0 * tf.sin(phi0))
+    g1 = tf.complex(rho1 * tf.cos(phi1), rho1 * tf.sin(phi1))
+    g2 = tf.complex(rho2 * tf.cos(phi2), rho2 * tf.sin(phi2))
+    
+    # Convert to physical polarization amplitudes
+    A0 = - g0 * math.sqrt(1/3) + g2 * math.sqrt(2/3)
+    Aperp = -g1
+    Aparallel = -g0 * math.sqrt(2/3) - g2 * math.sqrt(1/3)
+    
+    # Compute physical quantities
+    A0_sq = np.abs(A0)**2
+    Aperp_sq = np.abs(Aperp)**2
+    Aparallel_sq = np.abs(Aparallel)**2
+    
+    # Phase differences
+    phi_range = lambda x: (x - 0)% (2*math.pi) + 0
+    delta_perp_minus_0 = phi_range(-tf.math.angle(Aperp/A0))
+    delta_parallel_minus_0 = phi_range(-tf.math.angle(Aparallel/A0))
+    
+    print("\n2. Amplitude parameters comparison:")
+    print("-" * 80)
+    print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+    print(f"  {'-'*75}")
+    
+    for name, actual, expected in [
+        ("|A₀(0)|²", A0_sq, expected_params["A0_sq"]),
+        ("|A_⊥(0)|²", Aperp_sq, expected_params["Aperp_sq"]),
+        ("|A_∥(0)|²", Aparallel_sq, expected_params["Aparallel_sq"]),
+    ]:
+        diff = actual - expected
+        status = "✅" if abs(diff) < 0.01 else "❌"
+        print(f"  {name:<20} {actual:<15.6f} {expected:<15.4f} {diff:+.6f} {status:<10}")
+    
+    print("\n3. Phase difference parameters comparison:")
+    print("-" * 80)
+    print(f"  {'Parameter':<20} {'tf-pwa':<15} {'Expected':<15} {'Difference':<15} {'Status':<10}")
+    print(f"  {'-'*75}")
+    
+    for name, actual, expected in [
+        ("δ_⊥ - δ₀", delta_perp_minus_0, expected_params["delta_perp"]),
+        ("δ_∥ - δ₀", delta_parallel_minus_0, expected_params["delta_parallel"]),
+    ]:
+        diff = actual - expected
+        status = "✅" if abs(diff) < 0.05 else "❌"
+        print(f"  {name:<20} {actual:<15.4f} {expected:<15.2f} {diff:+.4f} {status:<10}")
+
+print("=" * 80)
+print("Parameters check completed")
+print("=" * 80 + "\n")
 
 f = config.get_particle_function("phi10")
 ha = f.ha
@@ -152,7 +279,7 @@ for i in range(0, n_mc, batch_size):
     )
     data = config.data.cal_angle(p4)
     data["time"] = tf.constant(mc_b_truetau[i:end], dtype=tf.float64)
-    event_tag = np.where(mc_b_id_genlvl[i:end] > 0, 1.0, -1.0).astype(np.float64)
+    event_tag = np.where(mc_b_id[i:end] > 0, 1.0, -1.0).astype(np.float64)
     data["tag"] = tf.constant(event_tag, dtype=tf.float64)
     data["eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
     data["del_eta"] = tf.constant(np.zeros(end - i), dtype=tf.float64)
@@ -189,6 +316,28 @@ print("="*60)
 years_suffix = '_'.join(str(y) for y in selected_years)
 trigger_suffix = selected_trigger
 file_suffix = f"{years_suffix}_{trigger_suffix}"
+
+#if selected_trigger == 'unbiased':
+#    data_trigger = np.zeros(n_data, dtype=np.int32)
+#    mc_trigger = np.zeros(n_mc, dtype=np.int32)
+#elif selected_trigger == 'biased':
+#    data_trigger = np.ones(n_data, dtype=np.int32)
+#    mc_trigger = np.ones(n_mc, dtype=np.int32)
+#else:
+#    data_trigger = np.random.choice([0, 1], n_data, p=[0.8, 0.2])
+#    mc_trigger = np.random.choice([0, 1], n_mc, p=[0.8, 0.2])
+
+#data_tag = np.random.choice([-1, 0, 1], n_data, p=[0.4, 0.2, 0.4]).astype(np.int32)
+#data_eta = np.random.random(n_data) * 0.5
+#
+#mc_tag = np.random.choice([-1, 0, 1], n_mc, p=[0.4, 0.2, 0.4]).astype(np.int32)
+#mc_eta = np.random.random(n_mc) * 0.5
+
+#data_tag = np.where(data_b_id > 0, 1, -1).astype(np.int32)
+#data_eta = np.zeros(n_data, dtype=np.float64)  
+#
+#mc_tag = np.where(mc_b_id > 0, 1, -1).astype(np.int32)
+#mc_eta = np.zeros(n_mc, dtype=np.float64)  
 
 real_data_tag = np.load(f"data_tag_{file_suffix}.npy")
 real_data_eta = np.load(f"data_eta_{file_suffix}.npy")
@@ -229,6 +378,7 @@ print("Saving pseudo_data other data...")
 np.save(f"pseudo_data_weight_{file_suffix}.npy", data_sw)
 np.save(f"pseudo_data_angles_{file_suffix}.npy", np.stack([np.arccos(data_helcosthetaL), np.arccos(data_helcosthetaK), data_helphi], axis=-1))
 np.save(f"pseudo_data_t_smear_{file_suffix}.npy", data_time)
+np.save(f"pseudo_data_t_resolution_{file_suffix}.npy", data_sigmat)
 np.save(f"pseudo_data_trigger_{file_suffix}.npy", data_trigger)
 np.save(f"pseudo_data_year_{file_suffix}.npy", data_year)
 
@@ -247,6 +397,7 @@ print("Saving pseudo_MC other data...")
 np.save(f"pseudo_MC_weight_{file_suffix}.npy", mc_sw_corrected)
 np.save(f"pseudo_MC_angles_{file_suffix}.npy", np.stack([np.arccos(mc_helcosthetaL), np.arccos(mc_helcosthetaK), mc_helphi], axis=-1))
 np.save(f"pseudo_MC_t_smear_{file_suffix}.npy", mc_time)
+np.save(f"pseudo_MC_t_resolution_{file_suffix}.npy", mc_sigmat)
 np.save(f"pseudo_MC_trigger_{file_suffix}.npy", mc_trigger)
 np.save(f"pseudo_MC_year_{file_suffix}.npy", mc_year)
 
