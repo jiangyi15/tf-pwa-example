@@ -1,0 +1,48 @@
+{
+	"2015":{
+		"CspFactors" : [
+			{
+				"Name": "Csp0",
+				"Value": 0.8405,
+				"Error": 0.0,
+				"Bin_ll":990,
+				"Bin_ul":1008
+			},
+			{
+				"Name": "Csp1",
+				"Value": 0.8643,
+				"Error": 0.0,
+				"Bin_ll":1008,
+				"Bin_ul":1016
+			},
+			{
+				"Name": "Csp2",
+				"Value": 0.8075,
+				"Error": 0.0,
+				"Bin_ll":1016,
+				"Bin_ul":1020
+			},
+			{
+				"Name": "Csp3",
+				"Value": 0.8528,
+				"Error": 0.0,
+				"Bin_ll":1020,
+				"Bin_ul":1024
+			},
+			{
+				"Name": "Csp4",
+				"Value": 0.9355,
+				"Error": 0.0,
+				"Bin_ll":1024,
+				"Bin_ul":1032
+			},
+			{
+				"Name": "Csp5",
+				"Value": 0.9724,
+				"Error": 0.0,
+				"Bin_ll":1032,
+				"Bin_ul":1050
+			}
+		]
+	}
+}

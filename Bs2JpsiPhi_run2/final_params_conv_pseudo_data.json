@@ -1,0 +1,33 @@
+{
+  "value": {
+    "Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0r": 0.0563935401539098,
+    "Bs->Jpsi.phi10Jpsi->mup.mumphi10->Kp.Km_total_0i": -2.193297650872407,
+    "Bs->Jpsi.phi10_g_ls_0r": 1.0,
+    "Bs->Jpsi.phi10_g_ls_0i": 0.0,
+    "Jpsi->mup.mum_g_ls_0r": 1.0,
+    "Jpsi->mup.mum_g_ls_0i": 0.0,
+    "Jpsi->mup.mum_g_ls_1r": 0.7071067811865475,
+    "Jpsi->mup.mum_g_ls_1i": 0.0,
+    "phi10->Kp.Km_g_ls_0r": 1.0,
+    "phi10->Kp.Km_g_ls_0i": 0.0,
+    "Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0r": 0.5,
+    "Bs->Jpsi.phi11Jpsi->mup.mumphi11->Kp.Km_total_0i": 0.06159265358979292,
+    "Bs->Jpsi.phi11_g_ls_0r": 1.0,
+    "Bs->Jpsi.phi11_g_ls_0i": 0.0,
+    "phi11->Kp.Km_g_ls_0r": 1.0,
+    "phi11->Kp.Km_g_ls_0i": 0.0,
+    "Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0r": 0.8640722010508782,
+    "Bs->Jpsi.phi12Jpsi->mup.mumphi12->Kp.Km_total_0i": -0.03750145344605828,
+    "Bs->Jpsi.phi12_g_ls_0r": 1.0,
+    "Bs->Jpsi.phi12_g_ls_0i": 0.0,
+    "phi12->Kp.Km_g_ls_0r": 1.0,
+    "phi12->Kp.Km_g_ls_0i": 0.0,
+    "Bs_delta_m": 17.8,
+    "Bs_delta_gamma": -0.08543,
+    "Bs_gamma": 0.6614,
+    "Bs_poqr": 1.0,
+    "Bs_poqi": -0.03
+  },
+  "error": {},
+  "status": {}
+}

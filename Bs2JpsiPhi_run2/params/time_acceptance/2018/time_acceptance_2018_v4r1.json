@@ -1,0 +1,88 @@
+{
+     "2018": {
+          "TimeAccParameter": {
+               "SplineUnbiased": [
+                    {
+                         "Name": "coeff0",
+                         "Value": 1.0,
+                         "Error": 0.0
+                    },
+                    {
+                         "Name": "coeff1",
+                         "Value": 1.04094,
+                         "Error": 0.02469
+                    },
+                    {
+                         "Name": "coeff2",
+                         "Value": 0.97953,
+                         "Error": 0.01569
+                    },
+                    {
+                         "Name": "coeff3",
+                         "Value": 1.03234,
+                         "Error": 0.03113
+                    },
+                    {
+                         "Name": "coeff4",
+                         "Value": 0.93487,
+                         "Error": 0.03552
+                    },
+                    {
+                         "Name": "coeff5",
+                         "Value": 0.95973,
+                         "Error": 0.02939
+                    }
+               ],
+               "KnotParameter": [
+                    {
+                         "Name": "knot0",
+                         "Value": 0.3
+                    },
+                    {
+                         "Name": "knot1",
+                         "Value": 0.91
+                    },
+                    {
+                         "Name": "knot2",
+                         "Value": 1.96
+                    },
+                    {
+                         "Name": "knot3",
+                         "Value": 9.0
+                    }
+               ],
+               "SplineBiased": [
+                    {
+                         "Name": "coeff0",
+                         "Value": 1.0,
+                         "Error": 0.0
+                    },
+                    {
+                         "Name": "coeff1",
+                         "Value": 2.006,
+                         "Error": 0.2323
+                    },
+                    {
+                         "Name": "coeff2",
+                         "Value": 2.0365,
+                         "Error": 0.1833
+                    },
+                    {
+                         "Name": "coeff3",
+                         "Value": 2.3711,
+                         "Error": 0.2505
+                    },
+                    {
+                         "Name": "coeff4",
+                         "Value": 2.179,
+                         "Error": 0.2349
+                    },
+                    {
+                         "Name": "coeff5",
+                         "Value": 2.0033,
+                         "Error": 0.2088
+                    }
+               ]
+          }
+     }
+}

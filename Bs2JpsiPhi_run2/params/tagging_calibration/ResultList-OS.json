@@ -1,0 +1,157 @@
+{      "Parameter": [
+        {
+          "Name": "eta_OS_Run2",
+          "Value": 0.3546,
+          "Error": 0.0000
+        }
+        ],
+"ResultSet": [
+{
+      "ResultSetLabel": "TaggingOS2016",
+      "Description" : [
+         "Tagging calibration parameters OS 2016 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_OS_2016",
+          "Value": 0.3831,
+          "Error": 0.0007
+        },
+        {
+          "Name": "p1_OS_2016",
+          "Value": 0.8518,
+          "Error": 0.0062
+        },
+        {
+          "Name": "dp0_OS_2016",
+          "Value": 0.0092,
+          "Error": 0.0013
+        },
+        {
+          "Name": "dp1_OS_2016",
+          "Value": 0.0141,
+          "Error": 0.0119
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.120 ,  0.00 , 0.00 ],
+        [ 0.120 ,  1.00 ,  0.00 , 0.00 ],
+        [ 0.00  ,  0.00 ,  1.00 , 0.119 ],
+        [ 0.00  ,  0.00 ,  0.119 ,  1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0008, 0.0156, 0.0, 0.0]
+  },
+  {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0005, 0.0044, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0002, 0.0021, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingOS2017",
+      "Description" : [
+         "Tagging calibration parameters OS 2017 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_OS_2017",
+          "Value": 0.3821,
+          "Error": 0.0007
+        },
+        {
+          "Name": "p1_OS_2017",
+          "Value": 0.8297,
+          "Error": 0.0065
+        },
+        {
+          "Name": "dp0_OS_2017",
+          "Value": 0.0123,
+          "Error": 0.0014
+        },
+        {
+          "Name": "dp1_OS_2017",
+          "Value": 0.0510,
+          "Error": 0.0135
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.139,  0.00 , 0.00 ],
+        [ 0.139 ,  1.00 ,  0.00 , 0.00 ],
+        [ 0.00  ,  0.00 ,  1.00 , 0.137 ],
+        [ 0.00  ,  0.00 ,  0.137 ,  1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0002, 0.0090, 0.0, 0.0]
+  },
+  {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0005, 0.0047, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0003, 0.0026, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingOS2018",
+      "Description" : [
+         "Tagging calibration parameters OS 2018 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_OS_2018",
+          "Value": 0.3832,
+          "Error": 0.0006
+        },
+        {
+          "Name": "p1_OS_2018",
+          "Value": 0.8406,
+          "Error": 0.0059
+        },
+        {
+          "Name": "dp0_OS_2018",
+          "Value": 0.0114,
+          "Error": 0.0013
+        },
+        {
+          "Name": "dp1_OS_2018",
+          "Value": 0.0133,
+          "Error": 0.0118
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.136,  0.00 , 0.00 ],
+        [ 0.136 ,  1.00 ,  0.00 , 0.00 ],
+        [ 0.00  ,  0.00 ,  1.00 , 0.135 ],
+        [ 0.00  ,  0.00 ,  0.135 ,  1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0005, 0.0039, 0.0, 0.0]
+  },
+  {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0006, 0.0051, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0005, 0.0046, 0.0, 0.0]
+        }
+  ]
+}
+
+
+]
+}
+

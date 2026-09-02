@@ -1,0 +1,166 @@
+{
+	"ResultSet": [
+{
+      "ResultSetLabel": "TaggingSS2016",
+      "Description" : [
+         "Tagging calibration parameters SS 2016 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2016",
+          "Value": 0.4553,
+          "Error": 0.0066
+        },
+        {
+          "Name": "p1_SSK_2016",
+          "Value": 0.5557,
+          "Error": 0.0096
+        },
+         {
+          "Name": "p2_SSK_2016",
+          "Value": -1.3054,
+          "Error": 0.0096
+        },
+        {
+          "Name": "dp0_SSK_2016",
+            "Value": -0.0164,
+            "Error": 0.0009
+        },
+        {
+          "Name": "dp1_SSK_2016",
+            "Value": 0.0277,
+            "Error": 0.0089
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  , -0.080, 0.0,  0.0 ],
+        [ -0.080, 1.00  , 0.0,  0.0 ],
+        [ 0.0   , 0.0   , 1.00, 0.117],
+        [ 0.0   , 0.0   , 0.117,1.00]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0024, 0.0207, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0005, 0.0053, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0011, 0.0128, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingSS2017",
+      "Description" : [
+         "Tagging calibration parameters SS 2017 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2017",
+          "Value": 0.4467,
+          "Error": 0.0063
+        },
+        {
+          "Name": "p1_SSK_2017",
+          "Value": 0.5064,
+          "Error": 0.0751
+        },
+         {
+          "Name": "p2_SSK_2017",
+          "Value": -1.0639,
+          "Error": 0.0751
+        },
+        {
+          "Name": "dp0_SSK_2017",
+            "Value": -0.0158,
+            "Error": 0.0008
+        },
+        {
+          "Name": "dp1_SSK_2017",
+            "Value": 0.0143,
+            "Error": 0.0083
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.046, 0.0, 0.0 ],
+        [ 0.046 ,  1.00, 0.0, 0.0 ],
+        [ 0.0,     0.0, 1.00, 0.128 ],
+        [ 0.0,     0.0, 0.128, 1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0013, 0.0402, 0.0, 0.0]
+	},
+	{
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0004, 0.0045, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0009, 0.0093, 0.0, 0.0]
+        }
+  ]
+},
+{
+      "ResultSetLabel": "TaggingSS2018",
+      "Description" : [
+         "Tagging calibration parameters SS 2018 along with statistical and systematic uncertainties and correlations"
+      ],
+      "Parameter": [
+        {
+          "Name": "p0_SSK_2018",
+          "Value": 0.4532,
+          "Error": 0.0071
+        },
+        {
+          "Name": "p1_SSK_2018",
+          "Value": 0.5342,
+          "Error": 0.0764
+        },
+       {
+          "Name": "p2_SSK_2018",
+          "Value": -1.4361,
+          "Error": 0.0764
+        }, 
+        {
+          "Name": "dp0_SSK_2018",
+            "Value": -0.0158,
+            "Error": 0.0007
+        },
+        {
+          "Name": "dp1_SSK_2018",
+            "Value": 0.0229,
+            "Error": 0.0077
+        }
+      ],
+      "StatisticalCorrelationMatrix": [
+        [ 1.00  ,  0.057, 0.0, 0.0],
+        [ 0.057 ,  1.00 , 0.0, 0.0],
+        [ 0.0,     0.0, 1.00, 0.111 ],
+        [ 0.0,     0.0, 0.111, 1.00 ]
+      ],
+      "SystematicErrors": [
+        {
+          "Name": "PortabilityDiff",
+          "Values": [0.0019, 0.0351, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatSignal",
+          "Values": [0.0004, 0.0045, 0.0, 0.0]
+        },
+        {
+          "Name": "PortabilityStatControl",
+          "Values": [0.0007, 0.0074, 0.0, 0.0]
+        }
+  ]
+}
+
+
+]
+}
+

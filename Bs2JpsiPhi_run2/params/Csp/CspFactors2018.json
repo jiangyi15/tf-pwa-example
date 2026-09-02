@@ -1,0 +1,48 @@
+{
+	"2018":{
+		"CspFactors" : [
+			{
+				"Name": "Csp0",
+				"Value": 0.846,
+				"Error": 0.0,
+				"Bin_ll":990,
+				"Bin_ul":1008
+			},
+			{
+				"Name": "Csp1",
+				"Value": 0.8681,
+				"Error": 0.0,
+				"Bin_ll":1008,
+				"Bin_ul":1016
+			},
+			{
+				"Name": "Csp2",
+				"Value": 0.8125,
+				"Error": 0.0,
+				"Bin_ll":1016,
+				"Bin_ul":1020
+			},
+			{
+				"Name": "Csp3",
+				"Value": 0.8549,
+				"Error": 0.0,
+				"Bin_ll":1020,
+				"Bin_ul":1024
+			},
+			{
+				"Name": "Csp4",
+				"Value": 0.9362,
+				"Error": 0.0,
+				"Bin_ll":1024,
+				"Bin_ul":1032
+			},
+			{
+				"Name": "Csp5",
+				"Value": 0.9735,
+				"Error": 0.0,
+				"Bin_ll":1032,
+				"Bin_ul":1050
+			}
+		]
+	}
+}
